@@ -56,7 +56,7 @@ class CSVEditor:
     def display_data(self, data):
         self.data_table.delete("1.0", tk.END)
         for row in data:
-            self.data_table.insert(tk.END, f"{row[0]}, {row[1]}\n")
+            self.data_table.insert(tk.END, f"{row[0]}, {row[1]}, {row[2]}\n")
 
     def add_data(self):
         name = self.name_entry.get()
@@ -73,6 +73,8 @@ class CSVEditor:
             reader = csv.reader(file)
             data = [row for row in reader if query in row[0]]
             self.display_data(data)
+            if query not in file:
+                print("Data is not available")
 
     def modify_data(self):
         with open("student_records.csv", "r") as file:
