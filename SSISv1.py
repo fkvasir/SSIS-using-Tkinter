@@ -27,7 +27,7 @@ def save_selection():
         messagebox.showinfo("Selection Saved", "Selection has been saved successfully.")
         entry_name.delete(0, tk.END)
         entry_id.delete(0,tk.END)
-        entry_age.delete(0,tk.Entry)
+        entry_age.delete(0,tk.END)
         listbox_courses.selection_clear(0, tk.END)
     else:
         messagebox.showerror("Error", "Please enter a student name, id and age and select at least one course.")
@@ -84,13 +84,13 @@ def edit_data():
         label_courses.grid(row=1, column=0)
         entry_courses = tk.Entry(frame_edit)
         entry_courses.grid(row=1, column=1)
-        entry_courses.insert(tk.END, ', '.join(selected_data[1:]))
+        entry_courses.insert(tk.END, ', '.join(selected_data[1:2]))
 
         label_id = tk.Label(frame_edit,text="ID no.:")
         label_id.grid(row = 2, column = 0)
         entry_id = tk.Entry(frame_edit)
         entry_id.grid(row = 2, column = 1)
-        entry_id.insert(tk.END, ', '.join(selected_data[2:]))
+        entry_id.insert(tk.END, ', '.join(selected_data[2:3]))
 
         label_age = tk.Label(frame_edit, text = "Age:" )
         label_age.grid(row = 3, column = 0)
@@ -113,9 +113,9 @@ def save_changes(selected_index):
     with open('student_courses.csv', 'r') as file:
         records = list(csv.reader(file))
 
-    records[selected_index][0] = new_name
-    records[selected_index][1:] = new_courses
-    records[selected_index][2:] = new_id
+    records[selected_index][0:1] = new_name
+    records[selected_index][1:2] = new_courses
+    records[selected_index][2:3] = new_id
     records[selected_index][3:] = new_age
 
     with open('student_courses.csv', 'w', newline='') as file:
