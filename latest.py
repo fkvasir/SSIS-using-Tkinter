@@ -2,106 +2,150 @@ import csv
 import tkinter as tk
 from tkinter import messagebox
 
-def add_record():
-    name = entry_name.get()
-    email = entry_email.get()
+def add_course():
+    course = entry_course.get()
 
-    if name and email:
-        with open('records.csv', 'a', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow([name, email])
-        
-        messagebox.showinfo("Record Added", "Record has been added successfully.")
-        clear_entries()
+    if course:
+        listbox_courses.insert(tk.END, course)
+        entry_course.delete(0, tk.END)
     else:
-        messagebox.showerror("Error", "Please enter both name and email.")
+        messagebox.showerror("Error", "Please enter a course.")
 
-def delete_record():
-    selected_index = listbox.curselection()
+def save_selection():
+    student_name = entry_name.get()
+    selected_courses = listbox_courses.curselection()
+
+    if student_name and selected_courses:
+        courses = [listbox_courses.get(index) for index in selected_courses]
+        with open('student_courses.csv', 'a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow([student_name] + courses)
+        
+        messagebox.showinfo("Selection Saved", "Selection has been saved successfully.")
+        entry_name.delete(0, tk.END)
+        listbox_courses.selection_clear(0, tk.END)
+    else:
+        messagebox.showerror("Error", "Please enter a student name and select at least one course.")
+
+def remove_data():
+    selected_index = listbox_data.curselection()
 
     if selected_index:
         confirmation = messagebox.askyesno("Confirm Deletion", "Are you sure you want to delete this record?")
         
         if confirmation:
-            with open('records.csv', 'r') as file:
+            with open('student_courses.csv', 'r') as file:
                 records = list(csv.reader(file))
             
             del records[selected_index[0]]
             
-            with open('records.csv', 'w', newline='') as file:
+            with open('student_courses.csv', 'w', newline='') as file:
                 writer = csv.writer(file)
                 writer.writerows(records)
             
-            messagebox.showinfo("Record Deleted", "Record has been deleted successfully.")
-            load_records()
+            messagebox.showinfo("Data Removed", "Data has been removed successfully.")
+            load_data()
     else:
-        messagebox.showerror("Error", "Please select a record to delete.")
+        messagebox.showerror("Error", "Please select a record to remove.")
 
-def edit_record():
-    selected_index = listbox.curselection()
+def load_data():
+    listbox_data.delete(0, tk.END)
+
+    with open('student_courses.csv', 'r') as file:
+        records = csv.reader(file)
+        for row in records:
+            listbox_data.insert(tk.END, ', '.join(row))
+
+def edit_data():
+    selected_index = listbox_data.curselection()
 
     if selected_index:
-        name = entry_name.get()
-        email = entry_email.get()
+        selected_data = listbox_data.get(selected_index)
+        selected_data = selected_data.split(', ')
 
-        if name and email:
-            with open('records.csv', 'r') as file:
-                records = list(csv.reader(file))
-            
-            records[selected_index[0]] = [name, email]
-            
-            with open('records.csv', 'w', newline='') as file:
-                writer = csv.writer(file)
-                writer.writerows(records)
-            
-            messagebox.showinfo("Record Updated", "Record has been updated successfully.")
-            clear_entries()
-            load_records()
-        else:
-            messagebox.showerror("Error", "Please enter both name and email.")
+        window_edit = tk.Toplevel()
+        window_edit.title("Edit Data")
+
+        frame_edit = tk.Frame(window_edit)
+        frame_edit.pack(pady=20)
+
+        label_name = tk.Label(frame_edit, text="Student Name:")
+        label_name.grid(row=0, column=0)
+        entry_name = tk.Entry(frame_edit)
+        entry_name.grid(row=0, column=1)
+        entry_name.insert(tk.END, selected_data[0])
+
+        label_courses = tk.Label(frame_edit, text="Courses:")
+        label_courses.grid(row=1, column=0)
+        entry_courses = tk.Entry(frame_edit)
+        entry_courses.grid(row=1, column=1)
+        entry_courses.insert(tk.END, ', '.join(selected_data[1:]))
+
+        button_save = tk.Button(window_edit, text="Save Changes", command=lambda: save_changes(selected_index))
+        button_save.pack(pady=10)
+
     else:
         messagebox.showerror("Error", "Please select a record to edit.")
 
-def load_records():
-    listbox.delete(0, tk.END)
+def save_changes(selected_index):
+    new_name = entry_name.get()
+    new_courses = entry_courses.get().split(', ')
 
-    with open('records.csv', 'r') as file:
-        records = csv.reader(file)
-        for row in records:
-            listbox.insert(tk.END, f"Name: {row[0]}, Email: {row[1]}")
+    with open('student_courses.csv', 'r') as file:
+        records = list(csv.reader(file))
 
-def clear_entries():
+    records[selected_index][0] = new_name
+    records[selected_index][1:] = new_courses
+
+    with open('student_courses.csv', 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerows(records)
+
+    messagebox.showinfo("Changes Saved", "Changes have been saved successfully.")
     entry_name.delete(0, tk.END)
-    entry_email.delete(0, tk.END)
+    entry_courses.delete(0, tk.END)
+    load_data()
 
 root = tk.Tk()
-root.title("Record Manager")
+root.title("Course Selection")
 
-frame = tk.Frame(root)
-frame.pack(pady=20)
+frame_courses = tk.Frame(root)
+frame_courses.pack(pady=20)
 
-label_name = tk.Label(frame, text="Name:")
+label_course = tk.Label(frame_courses, text="Enter Course:")
+label_course.grid(row=0, column=0)
+entry_course = tk.Entry(frame_courses)
+entry_course.grid(row=0, column=1)
+
+button_add_course = tk.Button(root, text="Add Course", command=add_course)
+button_add_course.pack(pady=5)
+
+listbox_courses = tk.Listbox(root, width=50)
+listbox_courses.pack(pady=10)
+
+frame_student = tk.Frame(root)
+frame_student.pack(pady=20)
+
+label_name = tk.Label(frame_student, text="Enter Student Name:")
 label_name.grid(row=0, column=0)
-entry_name = tk.Entry(frame)
+entry_name = tk.Entry(frame_student)
 entry_name.grid(row=0, column=1)
 
-label_email = tk.Label(frame, text="Email:")
-label_email.grid(row=1, column=0)
-entry_email = tk.Entry(frame)
-entry_email.grid(row=1, column=1)
+button_save_selection = tk.Button(root, text="Save Selection", command=save_selection)
+button_save_selection.pack(pady=5)
 
-button_add = tk.Button(root, text="Add Record", command=add_record)
-button_add.pack(pady=10)
+listbox_data = tk.Listbox(root, width=50)
+listbox_data.pack(pady=10)
 
-button_delete = tk.Button(root, text="Delete Record", command=delete_record)
-button_delete.pack(pady=5)
+frame_buttons = tk.Frame(root)
+frame_buttons.pack(pady=10)
 
-button_edit = tk.Button(root, text="Edit Record", command=edit_record)
-button_edit.pack(pady=5)
+button_remove_data = tk.Button(frame_buttons, text="Remove Data", command=remove_data)
+button_remove_data.grid(row=0, column=0, padx=5)
 
-listbox = tk.Listbox(root, width=50)
-listbox.pack(pady=10)
+button_edit_data = tk.Button(frame_buttons, text="Edit Data", command=edit_data)
+button_edit_data.grid(row=0, column=1, padx=5)
 
-load_records()
+load_data()
 
 root.mainloop()
