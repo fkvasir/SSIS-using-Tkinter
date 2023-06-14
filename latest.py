@@ -13,19 +13,24 @@ def add_course():
 
 def save_selection():
     student_name = entry_name.get()
+    student_id = entry_id.get()
+    student_age = entry_age.get()
+
     selected_courses = listbox_courses.curselection()
 
-    if student_name and selected_courses:
+    if student_name and student_id and student_age and selected_courses:
         courses = [listbox_courses.get(index) for index in selected_courses]
         with open('student_courses.csv', 'a', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow([student_name] + courses)
+            writer.writerow([student_name] + courses + [student_age] + [student_id])
         
         messagebox.showinfo("Selection Saved", "Selection has been saved successfully.")
         entry_name.delete(0, tk.END)
+        entry_id.delete(0,tk.END)
+        entry_age.delete(0,tk.Entry)
         listbox_courses.selection_clear(0, tk.END)
     else:
-        messagebox.showerror("Error", "Please enter a student name and select at least one course.")
+        messagebox.showerror("Error", "Please enter a student name, id and age and select at least one course.")
 
 def remove_data():
     selected_index = listbox_data.curselection()
@@ -81,6 +86,18 @@ def edit_data():
         entry_courses.grid(row=1, column=1)
         entry_courses.insert(tk.END, ', '.join(selected_data[1:]))
 
+        label_id = tk.Label(frame_edit,text="ID no.:")
+        label_id.grid(row = 2, column = 0)
+        entry_id = tk.Entry(frame_edit)
+        entry_id.grid(row = 2, column = 1)
+        entry_id.insert(tk.END, ', '.join(selected_data[2:]))
+
+        label_age = tk.Label(frame_edit, text = "Age:" )
+        label_age.grid(row = 3, column = 0)
+        entry_age = tk.Entry(frame_edit)
+        entry_age.grid(row = 3, column = 1)
+        entry_age.insert(tk.END, ', '.join(selected_data[3:]))
+
         button_save = tk.Button(window_edit, text="Save Changes", command=lambda: save_changes(selected_index))
         button_save.pack(pady=10)
 
@@ -89,13 +106,17 @@ def edit_data():
 
 def save_changes(selected_index):
     new_name = entry_name.get()
-    new_courses = entry_courses.get().split(', ')
+    new_courses = entry_course.get().split(', ')
+    new_id = entry_id.get().split(', ')
+    new_age = entry_age.get().split(', ')
 
     with open('student_courses.csv', 'r') as file:
         records = list(csv.reader(file))
 
     records[selected_index][0] = new_name
     records[selected_index][1:] = new_courses
+    records[selected_index][2:] = new_id
+    records[selected_index][3:] = new_age
 
     with open('student_courses.csv', 'w', newline='') as file:
         writer = csv.writer(file)
@@ -126,16 +147,26 @@ listbox_courses.pack(pady=10)
 frame_student = tk.Frame(root)
 frame_student.pack(pady=20)
 
-label_name = tk.Label(frame_student, text="Enter Student Name:")
+label_name = tk.Label(frame_student, text="Student Name:")
 label_name.grid(row=0, column=0)
 entry_name = tk.Entry(frame_student)
 entry_name.grid(row=0, column=1)
+
+label_id = tk.Label(frame_student, text="Student ID no:")
+label_id.grid(row=2, column=0)
+entry_id = tk.Entry(frame_student)
+entry_id.grid(row=2, column=1)
 
 button_save_selection = tk.Button(root, text="Save Selection", command=save_selection)
 button_save_selection.pack(pady=5)
 
 listbox_data = tk.Listbox(root, width=50)
 listbox_data.pack(pady=10)
+
+label_age = tk.Label(frame_student, text="Enter Age:")
+label_age.grid(row=3, column=0)
+entry_age = tk.Entry(frame_student)
+entry_age.grid(row=3, column=1)
 
 frame_buttons = tk.Frame(root)
 frame_buttons.pack(pady=10)
