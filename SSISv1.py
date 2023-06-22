@@ -14,7 +14,7 @@ def add_course():
 def save_selection():
     student_name = entry_name.get()
     student_id = entry_id.get()
-    student_age = entry_age.get()
+    student_gender = entry_gender.get()
 
     selected_courses = listbox_courses.curselection()
 
@@ -22,15 +22,15 @@ def save_selection():
         courses = [listbox_courses.get(index) for index in selected_courses]
         with open('student_courses.csv', 'a', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow([student_name] + courses + [student_age] + [student_id])
+            writer.writerow([student_name] + courses + [student_gender] + [student_id])
         
         messagebox.showinfo("Selection Saved", "Selection has been saved successfully.")
         entry_name.delete(0, tk.END)
         entry_id.delete(0,tk.END)
-        entry_age.delete(0,tk.END)
+        entry_gender.delete(0,tk.END)
         listbox_courses.selection_clear(0, tk.END)
     else:
-        messagebox.showerror("Error", "Please enter a student name, id and age and select at least one course.")
+        messagebox.showerror("Error", "Please enter a student name, id and age and select at most one course.")
 
 def remove_data():
     selected_index = listbox_data.curselection()
@@ -108,7 +108,7 @@ def save_changes(selected_index):
     new_name = entry_name.get()
     new_courses = entry_course.get().split(', ')
     new_id = entry_id.get().split(', ')
-    new_age = entry_age.get().split(', ')
+    new_gender = entry_gender.get().split(', ')
 
     with open('student_courses.csv', 'r') as file:
         records = list(csv.reader(file))
@@ -116,7 +116,7 @@ def save_changes(selected_index):
     records[selected_index][0:1] = new_name
     records[selected_index][1:2] = new_courses
     records[selected_index][2:3] = new_id
-    records[selected_index][3:] = new_age
+    records[selected_index][3:] = new_gender
 
     with open('student_courses.csv', 'w', newline='') as file:
         writer = csv.writer(file)
@@ -163,10 +163,10 @@ button_save_selection.pack(pady=5)
 listbox_data = tk.Listbox(root, width=50)
 listbox_data.pack(pady=10)
 
-label_age = tk.Label(frame_student, text="Enter Age:")
-label_age.grid(row=3, column=0)
-entry_age = tk.Entry(frame_student)
-entry_age.grid(row=3, column=1)
+label_gender = tk.Label(frame_student, text="Enter Gender:")
+label_gender.grid(row=3, column=0)
+entry_gender = tk.Entry(frame_student)
+entry_gender.grid(row=3, column=1)
 
 frame_buttons = tk.Frame(root)
 frame_buttons.pack(pady=10)
