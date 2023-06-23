@@ -107,12 +107,19 @@ x_scroll.config(command=stud_table.xview)
 y_scroll.pack(side=tk.RIGHT,fill=tk.Y)
 x_scroll.pack(side=tk.BOTTOM,fill=tk.X)
 
+stud_table.column("ID no.",text="ID no")
+stud_table.column("Name",text="Name")
+stud_table.column("Sex",text="Sex")
+stud_table.column("Year Level",text="Year Level")
+
+stud_table['show'] = 'headings'
+
 stud_table.column("ID no.",width=100)
 stud_table.column("Name",width=100)
 stud_table.column("Sex",width=100)
 stud_table.column("Year Level",width=100)
 stud_table.pack(fill=tk.BOTH,expand=True)
-stud_table['show'] = 'headings'
+
 
 
 
