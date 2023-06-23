@@ -4,14 +4,14 @@ from tkinter import ttk
 from tkinter import messagebox
 
 app = tk.Tk()
-app.geometry("720x720")
+app.geometry("1080x1080")
 app.title("SSIS version 2")
 
 title_label = tk.Label(app, text="Simple Student Information System", font=("Arial", 30, "bold"), border=12, relief= tk.GROOVE, bg = "lightgrey")
 title_label.pack(side=tk.TOP,fill=tk.X)
 
 detail_frame = tk.LabelFrame(app, text="Enter Details",font=("Arial",20),bd=12,relief=tk.GROOVE,bg="lightgrey")
-detail_frame.place(x=20,y=90,width=420,height=575)
+detail_frame.place(x=20,y=90,width=450,height=575)
 
 data_frame = tk.Frame(app, bg="lightgrey",relief=tk.GROOVE)
 data_frame.place(x=475,y=90,width=810,height=575)
@@ -63,10 +63,10 @@ add_btn.grid(row=0,column=0,padx=2,pady=2)
 update_btn = tk.Button(btn_frame, bg="lightgrey", text="UPDATE",bd=7,font=("Arial",13),width=15)
 update_btn.grid(row=0,column=1,padx=3,pady=2)
 
-delete_btn = tk.Button(btn_frame,bg="lightgrey",text="ADD",bd=7,font=("Arial",13),width=15)
+delete_btn = tk.Button(btn_frame,bg="lightgrey",text="DELETE",bd=7,font=("Arial",13),width=15)
 delete_btn.grid(row=1,column=0,padx=2,pady=2)
 
-clear_btn = tk.Button(btn_frame, bg="lightgrey", text="UPDATE",bd=7,font=("Arial",13),width=15)
+clear_btn = tk.Button(btn_frame, bg="lightgrey", text="CLEAR",bd=7,font=("Arial",13),width=15)
 clear_btn.grid(row=1,column=1,padx=3,pady=2)
 
 search_frame = tk.Frame(data_frame,bg="lightgrey",bd=10,relief=tk.GROOVE)
@@ -111,4 +111,4 @@ stud_table['show'] = 'headings'
 
 
 
-app.mainloop
+app.mainloop()
