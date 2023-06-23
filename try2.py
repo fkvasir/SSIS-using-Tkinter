@@ -16,20 +16,25 @@ detail_frame.place(x=20,y=90,width=420,height=575)
 data_frame = tk.Frame(app, bg="lightgrey",relief=tk.GROOVE)
 data_frame.place(x=475,y=90,width=810,height=575)
 
+id= tk.StringVar()
+name=tk.StringVar()
+sex=tk.StringVar()
+year=tk.StringVar()
+search=tk.StringVar()
 
 id_label = tk.Label(detail_frame, text="ID no.",font=("Arial", 17), bg= "lightgrey")
 id_label.grid(row=0,column=0,padx=2,pady=2)
 
-id_entry = tk.Entry(detail_frame,bd=7,font=("Arial",17))
+id_entry = tk.Entry(detail_frame,bd=7,font=("Arial",17),textvariable=id)
 id_entry.grid(row=0,column=1,padx=2,pady=2)
 
 name_label = tk.Label(detail_frame, text="Name",font=("Arial", 17), bg= "lightgrey")
 name_label.grid(row=1,column=0,padx=2,pady=2)
 
-name_entry = tk.Entry(detail_frame,bd=7,font=("Arial",17))
+name_entry = tk.Entry(detail_frame,bd=7,font=("Arial",17),textvariable=name)
 name_entry.grid(row=1 ,column=1,padx=2,pady=2)
 
-sex_label = tk.Label(detail_frame, text="Gender",font=("Arial", 17), bg= "lightgrey")
+sex_label = tk.Label(detail_frame, text="Sex",font=("Arial", 17), bg= "lightgrey")
 sex_label.grid(row=2,column=0,padx=2,pady=2)
 
 sex_entry = ttk.Combobox(detail_frame,font=("Arial",15))
@@ -95,7 +100,14 @@ x_scroll.config(command=stud_table.xview)
 y_scroll.pack(side=tk.RIGHT,fill=tk.Y)
 x_scroll.pack(side=tk.BOTTOM,fill=tk.X)
 
+stud_table.column("ID no.",width=100)
+stud_table.column("Name",width=100)
+stud_table.column("Sex",width=100)
+stud_table.column("Year Level",width=100)
 stud_table.pack(fill=tk.BOTH,expand=True)
+stud_table['show'] = 'headings'
+
+
 
 
 
