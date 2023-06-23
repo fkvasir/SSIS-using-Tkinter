@@ -50,7 +50,7 @@ course_label.grid(row=4,column=0,padx=2,pady=2)
 
 
 btn_frame= tk.Frame(detail_frame, bg="lightgrey",bd=10,relief=tk.GROOVE)
-btn_frame.place(x=18,y=390,width=354,height=120)
+btn_frame.place(x=22,y=390,width=342,height=120)
 
 add_btn = tk.Button(btn_frame,bg="lightgrey",text="ADD",bd=7,font=("Arial",13),width=15)
 add_btn.grid(row=0,column=0,padx=2,pady=2)
