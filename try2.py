@@ -22,35 +22,36 @@ sex=tk.StringVar()
 year=tk.StringVar()
 search=tk.StringVar()
 
-id_label = tk.Label(detail_frame, text="ID no.",font=("Arial", 17), bg= "lightgrey")
+id_label = tk.Label(detail_frame, text="ID no.",font=("Arial", 13), bg= "lightgrey")
 id_label.grid(row=0,column=0,padx=2,pady=2)
 
 id_entry = tk.Entry(detail_frame,bd=7,font=("Arial",17),textvariable=id)
 id_entry.grid(row=0,column=1,padx=2,pady=2)
 
-name_label = tk.Label(detail_frame, text="Name",font=("Arial", 17), bg= "lightgrey")
+name_label = tk.Label(detail_frame, text="Name",font=("Arial", 13), bg= "lightgrey")
 name_label.grid(row=1,column=0,padx=2,pady=2)
 
 name_entry = tk.Entry(detail_frame,bd=7,font=("Arial",17),textvariable=name)
 name_entry.grid(row=1 ,column=1,padx=2,pady=2)
 
-sex_label = tk.Label(detail_frame, text="Sex",font=("Arial", 17), bg= "lightgrey")
+sex_label = tk.Label(detail_frame, text="Sex",font=("Arial", 13), bg= "lightgrey")
 sex_label.grid(row=2,column=0,padx=2,pady=2)
 
-sex_entry = ttk.Combobox(detail_frame,font=("Arial",15),textvariable=sex)
+sex_entry = ttk.Combobox(detail_frame,font=("Arial",16),textvariable=sex)
 sex_entry['values']=("Male","Female")
 sex_entry.grid(row=2,column=1,padx=2,pady=2)
 
-year_label = tk.Label(detail_frame, text="Year Level",font=("Arial", 17), bg= "lightgrey")
+year_label = tk.Label(detail_frame, text="Year Level",font=("Arial", 13), bg= "lightgrey")
 year_label.grid(row=3,column=0,padx=2,pady=2)
 
 year_entry = tk.Entry(detail_frame,bd=7,font=("Arial",17),textvariable=year)
 year_entry.grid(row=3,column=1,padx=2,pady=2)
 
-course_label = tk.Label(detail_frame,text="Course", font=("Arial",17), bg="lightgrey")
+course_label = tk.Label(detail_frame,text="Course", font=("Arial",13), bg="lightgrey")
 course_label.grid(row=4,column=0,padx=2,pady=2)
 
 
+# FUNCTIONS
 
 
 
@@ -79,12 +80,11 @@ search_in =ttk.Combobox(search_frame,font=("Arial", 14),state="readonly",textvar
 search_in['value']=("ID no.","Name", "Sex", "Year Level", "Course")
 search_in.grid(row=0,column=1,padx=12,pady=2)
 
-search_btn = tk.Button(search_frame,text="Search",font=("Arial",13),bd=9,width=14,bg="lightgrey")
-search_btn.grid(row=0,column=2,padx=15,pady=2)
+search_btn = tk.Button(search_frame,text="Search",font=("Arial",13),bd=9,width=12,bg="lightgrey")
+search_btn.grid(row=0,column=2,padx=35,pady=2)
 
-show_btn = tk.Button(search_frame,text="Show",font=("Arial",13),bd=9,width=14,bg="lightgrey")
-show_btn.grid(row=0,column=3,padx=15,pady=2)
-
+show_btn = tk.Button(search_frame,text="Show",font=("Arial",13),bd=9,width=12,bg="lightgrey")
+show_btn.grid(row=0,column=3,padx=35,pady=2)
 
 
 main_frame=tk.Frame(data_frame,bg="lightgrey", bd=11,relief=tk.GROOVE)
