@@ -62,22 +62,71 @@ year_entry.grid(row=4,column=1,padx=2,pady=15)
 
 
 # FUNCTIONS
+def fetch_data():
+    conn = pymysql.connect(host="localhost",user="root",password="",database="sms1")
+    curr = conn.cursor()
+    curr.execute("SELECT * from data")
+    rows = curr.fetchall()
+    if len(rows)!=0:
+        stud_table.delete(*stud_table.get_children())
+        for row in rows:
+            stud_table.insert('',tk.END,values=row)
+        conn.commit()
+    conn.close()
 
+def add_data():
+    if id.get() == "" or name.get()=="" or sex.get()=="" or course.get()==""or year.get()=="":
+        messagebox.showerror("Error!")
+    else:
+        conn = pymysql.connect(host="localhost",user="root", password="sms1")
+        curr = conn.cursor()
+        curr.execute("INSERT INTO data VALUES(%s,%s,%s,%s)",(id.get(),name.get(),sex.get(),course.get(),year.get()))
+        conn.commit()
+        conn.close()
+
+        fetch_data()
+
+
+def getcur(event): #fetch data of selected row
+    cursor_row = stud_table.focus()
+    content = stud_table.item(cursor_row)
+    row= content['values']
+    id.set(row[0])
+    name.set(row[1])
+    sex.set(row[2])
+    course.set(row[3])
+    year.set(row[4])
+
+def clear():
+    id.set("")
+    name.set("")
+    sex.set("")
+    course.set("")
+    year.set("")
+
+def update_data():
+    conn = pymysql.connect(host="localhost",user="root",password="", database="sms1")
+    curr = conn.cursor()
+    curr.execute()
+    conn.commit()
+    conn.close()
+
+    fetch_data()
 
 
 btn_frame= tk.Frame(detail_frame, bg="lightgrey",bd=10,relief=tk.GROOVE)
 btn_frame.place(x=40,y=390,width=342,height=120)
 
-add_btn = tk.Button(btn_frame,bg="lightgrey",text="ADD",bd=7,font=("Arial",13),width=15)
+add_btn = tk.Button(btn_frame,bg="lightgrey",text="ADD",bd=7,font=("Arial",13),width=15,command=add_data)
 add_btn.grid(row=0,column=0,padx=2,pady=2)
 
-update_btn = tk.Button(btn_frame, bg="lightgrey", text="UPDATE",bd=7,font=("Arial",13),width=15)
+update_btn = tk.Button(btn_frame, bg="lightgrey", text="UPDATE",bd=7,font=("Arial",13),width=15,command=update_data)
 update_btn.grid(row=0,column=1,padx=3,pady=2)
 
 delete_btn = tk.Button(btn_frame,bg="lightgrey",text="DELETE",bd=7,font=("Arial",13),width=15)
 delete_btn.grid(row=1,column=0,padx=2,pady=2)
 
-clear_btn = tk.Button(btn_frame, bg="lightgrey", text="CLEAR",bd=7,font=("Arial",13),width=15)
+clear_btn = tk.Button(btn_frame, bg="lightgrey", text="CLEAR",bd=7,font=("Arial",13),width=15,command=clear)
 clear_btn.grid(row=1,column=1,padx=3,pady=2)
 
 
@@ -130,9 +179,9 @@ stud_table.column("Year Level",width=100)
 stud_table.pack(fill=tk.BOTH,expand=True)
 
 
+stud_table.bind("<ButtonRelease-1>",getcur)
 
-
-
+fetch_data()
 
 app.mainloop()
 
