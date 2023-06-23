@@ -85,10 +85,16 @@ show_btn.grid(row=0,column=3,padx=15,pady=2)
 main_frame=tk.Frame(data_frame,bg="lightgrey", bd=11,relief=tk.GROOVE)
 main_frame.pack(fill=tk.BOTH,expand=True)
 
-y_scroll = tk.Scrollbar(data_frame, orient = tk.VERTICAL)
-x_scroll = tk.Scrollbar(data_frame, orient = tk.HORIZONTAL)
+y_scroll = tk.Scrollbar(main_frame, orient = tk.VERTICAL)
+x_scroll = tk.Scrollbar(main_frame, orient = tk.HORIZONTAL)
 
-stud_table = ttk.Treeview(data_frame,columns=("ID no.","Name", "Sex","Year Level","Course"),yscrollcommand=y_scroll.set,xscrollcommand=x_scroll.set)
+stud_table = ttk.Treeview(main_frame,columns=("ID no.","Name", "Sex","Year Level","Course"),yscrollcommand=y_scroll.set,xscrollcommand=x_scroll.set)
+y_scroll.config(command=stud_table.yview)
+x_scroll.config(command=stud_table.xview)
+
+y_scroll.pack(side=tk.RIGHT,fill=tk.Y)
+x_scroll.pack(side=tk.BOTTOM,fill=tk.X)
+
 stud_table.pack(fill=tk.BOTH,expand=True)
 
 
