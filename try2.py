@@ -37,14 +37,14 @@ name_entry.grid(row=1 ,column=1,padx=2,pady=2)
 sex_label = tk.Label(detail_frame, text="Sex",font=("Arial", 17), bg= "lightgrey")
 sex_label.grid(row=2,column=0,padx=2,pady=2)
 
-sex_entry = ttk.Combobox(detail_frame,font=("Arial",15))
+sex_entry = ttk.Combobox(detail_frame,font=("Arial",15),textvariable=sex)
 sex_entry['values']=("Male","Female")
 sex_entry.grid(row=2,column=1,padx=2,pady=2)
 
 year_label = tk.Label(detail_frame, text="Year Level",font=("Arial", 17), bg= "lightgrey")
 year_label.grid(row=3,column=0,padx=2,pady=2)
 
-year_entry = tk.Entry(detail_frame,bd=7,font=("Arial",17))
+year_entry = tk.Entry(detail_frame,bd=7,font=("Arial",17),textvariable=year)
 year_entry.grid(row=3,column=1,padx=2,pady=2)
 
 course_label = tk.Label(detail_frame,text="Course", font=("Arial",17), bg="lightgrey")
@@ -75,7 +75,7 @@ search_frame.pack(side=tk.TOP, fill=tk.X)
 search_label=tk.Label(search_frame,text="Search",bg="lightgrey",font=("Arial",14))
 search_label.grid(row=0,column=0,padx=2,pady=2)
 
-search_in =ttk.Combobox(search_frame,font=("Arial", 14),state="readonly")
+search_in =ttk.Combobox(search_frame,font=("Arial", 14),state="readonly",textvariable=search)
 search_in['value']=("ID no.","Name", "Sex", "Year Level", "Course")
 search_in.grid(row=0,column=1,padx=12,pady=2)
 
@@ -106,12 +106,6 @@ stud_table.column("Sex",width=100)
 stud_table.column("Year Level",width=100)
 stud_table.pack(fill=tk.BOTH,expand=True)
 stud_table['show'] = 'headings'
-
-
-
-
-
-
 
 
 
