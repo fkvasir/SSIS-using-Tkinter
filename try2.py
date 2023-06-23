@@ -64,7 +64,31 @@ delete_btn.grid(row=1,column=0,padx=2,pady=2)
 clear_btn = tk.Button(btn_frame, bg="lightgrey", text="UPDATE",bd=7,font=("Arial",13),width=15)
 clear_btn.grid(row=1,column=1,padx=3,pady=2)
 
+search_frame = tk.Frame(data_frame,bg="lightgrey",bd=10,relief=tk.GROOVE)
+search_frame.pack(side=tk.TOP, fill=tk.X)
 
+search_label=tk.Label(search_frame,text="Search",bg="lightgrey",font=("Arial",14))
+search_label.grid(row=0,column=0,padx=2,pady=2)
+
+search_in =ttk.Combobox(search_frame,font=("Arial", 14),state="readonly")
+search_in['value']=("ID no.","Name", "Sex", "Year Level", "Course")
+search_in.grid(row=0,column=1,padx=12,pady=2)
+
+search_btn = tk.Button(search_frame,text="Search",font=("Arial",13),bd=9,width=14,bg="lightgrey")
+search_btn.grid(row=0,column=2,padx=15,pady=2)
+
+show_btn = tk.Button(search_frame,text="Show",font=("Arial",13),bd=9,width=14,bg="lightgrey")
+show_btn.grid(row=0,column=3,padx=15,pady=2)
+
+
+
+main_frame=tk.Frame(data_frame,bg="lightgrey", bd=11,relief=tk.GROOVE)
+main_frame.pack(fill=tk.BOTH,expand=True)
+
+y_scroll = tk.Scrollbar(data_frame, orient = tk.VERTICAL)
+x_scroll = tk.Scrollbar(data_frame, orient = tk.HORIZONTAL)
+
+stud_table = ttk.Treeview(data_frame,columns=("ID no.","Name", "Sex","Year Level","Course"))
 
 
 
