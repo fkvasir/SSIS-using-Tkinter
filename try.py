@@ -2,7 +2,6 @@ import csv
 import tkinter as tk
 from tkinter import messagebox
 import customtkinter
-from CTkMessagebox import CTkMessagebox
 
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("green")
@@ -143,7 +142,14 @@ title.pack(padx=10, pady= 10)
 #         for row in reader:
 #             listbox_students.insert(row)
 
+frame_courses = customtkinter.CTkFrame(app)
+frame_courses.pack(pady=10)
 
+label_courses = customtkinter.CTkLabel(frame_courses, text="Courses:")
+label_courses.pack(pady=10)
+
+courses = customtkinter.CTkFrame(frame_courses)
+courses.pack(pady=10)
 
 frame_student = customtkinter.CTkFrame(app)
 frame_student.pack(pady=20)
@@ -163,11 +169,6 @@ label_year.grid(row=2, column=0)
 entry_year = customtkinter.CTkEntry(frame_student)
 entry_year.grid(row=2, column=1)
 
-frame_courses = customtkinter.CTkFrame(app)
-frame_courses.pack(pady=10)
-
-label_courses = customtkinter.CTkLabel(frame_courses, text="Courses:")
-label_courses.pack()
 
 # listbox_courses = customtkinter.CListBox(frame_courses, width=50)
 # listbox_courses.pack(pady=5)
@@ -204,8 +205,8 @@ frame_students.pack(pady=20)
 label_students = customtkinter.CTkLabel(frame_students, text="Students:")
 label_students.pack()
 
-# listbox_students = customtkinter.CListBox(frame_students, width=50)
-# listbox_students.pack(pady=5)
+listbox_students = customtkinter.CTkFrame(frame_students)
+listbox_students.pack(pady=20)
 
 # load_students()
 
