@@ -29,11 +29,12 @@ name_label.grid(row=1,column=0,padx=2,pady=2)
 name_entry = tk.Entry(detail_frame,bd=7,font=("Arial",17))
 name_entry.grid(row=1 ,column=1,padx=2,pady=2)
 
-gender_label = tk.Label(detail_frame, text="Gender",font=("Arial", 17), bg= "lightgrey")
-gender_label.grid(row=2,column=0,padx=2,pady=2)
+sex_label = tk.Label(detail_frame, text="Gender",font=("Arial", 17), bg= "lightgrey")
+sex_label.grid(row=2,column=0,padx=2,pady=2)
 
-gender_entry = tk.Entry(detail_frame,bd=7,font=("Arial",17))
-gender_entry.grid(row=2,column=1,padx=2,pady=2)
+sex_entry = ttk.Combobox(detail_frame,font=("Arial",15))
+sex_entry['values']=("Male","Female")
+sex_entry.grid(row=2,column=1,padx=2,pady=2)
 
 year_label = tk.Label(detail_frame, text="Year Level",font=("Arial", 17), bg= "lightgrey")
 year_label.grid(row=3,column=0,padx=2,pady=2)
@@ -44,7 +45,28 @@ year_entry.grid(row=3,column=1,padx=2,pady=2)
 course_label = tk.Label(detail_frame,text="Course", font=("Arial",17), bg="lightgrey")
 course_label.grid(row=4,column=0,padx=2,pady=2)
 
-course_box= ttk.Combobox(detail_frame, )
+
+
+
+
+btn_frame= tk.Frame(detail_frame, bg="lightgrey",bd=10,relief=tk.GROOVE)
+btn_frame.place(x=18,y=390,width=354,height=120)
+
+add_btn = tk.Button(btn_frame,bg="lightgrey",text="ADD",bd=7,font=("Arial",13),width=15)
+add_btn.grid(row=0,column=0,padx=2,pady=2)
+
+update_btn = tk.Button(btn_frame, bg="lightgrey", text="UPDATE",bd=7,font=("Arial",13),width=15)
+update_btn.grid(row=0,column=1,padx=3,pady=2)
+
+delete_btn = tk.Button(btn_frame,bg="lightgrey",text="ADD",bd=7,font=("Arial",13),width=15)
+delete_btn.grid(row=1,column=0,padx=2,pady=2)
+
+clear_btn = tk.Button(btn_frame, bg="lightgrey", text="UPDATE",bd=7,font=("Arial",13),width=15)
+clear_btn.grid(row=1,column=1,padx=3,pady=2)
+
+
+
+
 
 
 
