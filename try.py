@@ -22,11 +22,11 @@ label_course.grid(row=0, column=0)
 entry_course = customtkinter.CTkEntry(frame_add_courses)
 entry_course.grid(row=0, column=1)
 
-button_add_course = customtkinter.CTkButton(app, text="Add Course")
-button_add_course.grid(row=0,column=0)
+button_add_course = customtkinter.CTkButton(frame_add_courses, text="Add Course")
+button_add_course.pack(pady=5)
 
-button_show_courses = customtkinter.CTkButton(app, text="Show Courses")
-button_show_courses.grid(row=0,column=1)
+button_show_courses = customtkinter.CTkButton(frame_add_courses, text="Show Courses")
+button_show_courses.pack(pady=5)
 
 
 frame_student = customtkinter.CTkFrame(app)
