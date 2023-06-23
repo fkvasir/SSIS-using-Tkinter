@@ -88,7 +88,8 @@ main_frame.pack(fill=tk.BOTH,expand=True)
 y_scroll = tk.Scrollbar(data_frame, orient = tk.VERTICAL)
 x_scroll = tk.Scrollbar(data_frame, orient = tk.HORIZONTAL)
 
-stud_table = ttk.Treeview(data_frame,columns=("ID no.","Name", "Sex","Year Level","Course"))
+stud_table = ttk.Treeview(data_frame,columns=("ID no.","Name", "Sex","Year Level","Course"),yscrollcommand=y_scroll.set,xscrollcommand=x_scroll.set)
+stud_table.pack(fill=tk.BOTH,expand=True)
 
 
 
