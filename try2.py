@@ -21,13 +21,42 @@ def refreshTable():
         
     stud_table.tag_configure('orow', background='EEEEEEE',font=('Arial',12))
         
-    
+        
+        
+        
 app = tk.Tk()
 app.geometry("1300x680")
 app.title("SSIS version 2.0")
 
 
+
+
 # functions
+
+# placeholders for entries
+# __init__ variables
+id= tk.StringVar()
+name=tk.StringVar()
+sex=tk.StringVar()
+year=tk.StringVar()
+course =tk.StringVar()
+searchin = tk.StringVar()
+
+# placeholder values
+def setph(word,num):
+    if num == 1:
+        id.set(word)
+    if num == 1:
+        name.set(word)
+    if num == 1:
+        sex.set(word)
+    if num == 1:
+        year.set(word)
+    if num == 1:
+        course.set(word)
+    if num == 1:
+        searchin.set(word)
+        
 def read():
     conn = connection()
     cursor = conn.cursor()
@@ -50,13 +79,95 @@ def add():
         try:
             conn = connection()
             cursor = conn.cursor()
-            cursor.execute("INSERT INTO student VALUES ('"+ id+"','"+name+"','"+sex+"','"+course+"','"+year"')")
+            cursor.execute("INSERT INTO student VALUES ('"+ id+"','"+name+"','"+sex+"','"+course+"','"+year+"')")
             conn.commit()
             conn.close()
         except:
             messagebox.showinfo("Error","ID already exist")
             return
+        
+    refreshTable()
 
+
+def reset():
+    decision = messagebox.askquestion("Warning!", "Delete all data?")
+    if decision != "yes":
+         return
+    else:
+        try:
+            conn = connection()
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM students")
+            conn.commit()
+            conn.close()
+        except:
+            messagebox.showinfo("Error","Sorry an error occured")
+            return
+    refreshTable()
+        
+def delete():
+    decision = messagebox.askquestion("Warning!", "Delete the selected data?")
+    if decision != "yes":
+        return
+    else:
+        selected_item=stud_table.selection()[0]
+        deleteData = str(stud_table.item(selected_item)['values'][0])
+        try:
+            conn = connection()
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM students WHERE ID='"+ str(deleteData)+"'")
+            conn.commit()
+            conn.close()
+        except:
+            messagebox.showinfo("Error","Sorry an error occured")
+            return
+    refreshTable()
+        
+def select():
+    try:
+        selected_item=stud_table.selection()[0]
+        id = str(stud_table.item(selected_item)['values'][0])
+        name = str(stud_table.item(selected_item)['values'][1])
+        sex = str(stud_table.item(selected_item)['values'][2])
+        year = str(stud_table.item(selected_item)['values'][3])
+        course = str(stud_table.item(selected_item)['values'][4])
+
+        setph(id,1)
+        setph(name,2)
+        setph(sex,3)
+        setph(year,4)
+        setph(course,5)
+        
+    except:
+        messagebox.showinfo("Error","Please select a data row")
+        
+def search():
+    id = str(id_entry.get())
+    name = str(name_entry.get())
+    sex = str(sex_entry.get())
+    course = str(course_entry.get())
+    year = str(year_entry.get())
+
+    conn = connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM students WHERE ID='"+
+                   id+"' or NAME='"+
+                   name+"' or SEX='"+
+                   sex+"' or COURSE='"+
+                   course+"' or YEAR='"+
+                   year+"'  ")
+    try:
+        result = cursor.fetchall()
+        for num in range (0,5):
+            setph(result[0][num],(num+1))
+            
+        conn.commit()
+        conn.close()
+    except:
+        messagebox.showinfo("Error","No data found")
+    
+
+# Graphical User Interface
 
 title_label = tk.Label(app, text="Simple Student Information System v2.0", font=("Arial", 30, "bold"), border=12, relief= tk.GROOVE, bg = "lightgrey")
 title_label.pack(side=tk.TOP,fill=tk.X)
@@ -69,13 +180,6 @@ data_frame = tk.Frame(app, bg="lightgrey",relief=tk.GROOVE)
 data_frame.place(x=475,y=90,width=810,height=575)
 
 
-# __init__ variables
-id= tk.StringVar()
-name=tk.StringVar()
-sex=tk.StringVar()
-year=tk.StringVar()
-search=tk.StringVar()
-course =tk.StringVar()
 
 
 # entries and labels >> detail frame
@@ -110,75 +214,23 @@ year_entry.grid(row=4,column=1,padx=2,pady=15)
 
 
 
-# # FUNCTIONS
-# def fetch_data():
-#     conn = pymysql.connect(host="localhost",user="root",password="",database="sms1")
-#     curr = conn.cursor()
-#     curr.execute("SELECT * from data")
-#     rows = curr.fetchall()
-#     if len(rows)!=0:
-#         stud_table.delete(*stud_table.get_children())
-#         for row in rows:
-#             stud_table.insert('',tk.END,values=row)
-#         conn.commit()
-#     conn.close()
-
-# def add_data():
-#     if id.get() == "" or name.get()=="" or sex.get()=="" or course.get()==""or year.get()=="":
-#         messagebox.showerror("Error!")
-#     else:
-#         conn = pymysql.connect(host="localhost",user="root", password="sms1")
-#         curr = conn.cursor()
-#         curr.execute("INSERT INTO data VALUES(%s,%s,%s,%s)",(id.get(),name.get(),sex.get(),course.get(),year.get()))
-#         conn.commit()
-#         conn.close()
-
-#         fetch_data()
-
-
-# def getcur(event): #fetch data of selected row
-#     cursor_row = stud_table.focus()
-#     content = stud_table.item(cursor_row)
-#     row= content['values']
-#     id.set(row[0])
-#     name.set(row[1])
-#     sex.set(row[2])
-#     course.set(row[3])
-#     year.set(row[4])
-
-# def clear():
-#     id.set("")
-#     name.set("")
-#     sex.set("")
-#     course.set("")
-#     year.set("")
-
-# def update_data():
-#     conn = pymysql.connect(host="localhost",user="root",password="", database="sms1")
-#     curr = conn.cursor()
-#     curr.execute()
-#     conn.commit()
-#     conn.close()
-
-#     fetch_data()
-
 
 # button frame
 btn_frame= tk.Frame(detail_frame, bg="lightgrey",bd=10,relief=tk.GROOVE)
 btn_frame.place(x=40,y=390,width=342,height=120)
 
 # buttons >> btn frame
-add_btn = tk.Button(btn_frame,bg="lightgrey",text="Add",bd=7,font=("Arial",13),width=15)
+add_btn = tk.Button(btn_frame,bg="lightgrey",text="Add",bd=7,font=("Arial",13),width=15, command= add)
 add_btn.grid(row=0,column=0,padx=2,pady=2)
 
-update_btn = tk.Button(btn_frame, bg="lightgrey", text="Update",bd=7,font=("Arial",13),width=15,)
+update_btn = tk.Button(btn_frame, bg="lightgrey", text="Update",bd=7,font=("Arial",13),width=15,command= update)
 update_btn.grid(row=0,column=1,padx=3,pady=2)
 
-delete_btn = tk.Button(btn_frame,bg="lightgrey",text="Delete",bd=7,font=("Arial",13),width=15)
+delete_btn = tk.Button(btn_frame,bg="lightgrey",text="Delete",bd=7,font=("Arial",13),width=15,command = delete )
 delete_btn.grid(row=1,column=0,padx=2,pady=2)
 
-clear_btn = tk.Button(btn_frame, bg="lightgrey", text="Clear",bd=7,font=("Arial",13),width=15)
-clear_btn.grid(row=1,column=1,padx=3,pady=2)
+select_btn = tk.Button(btn_frame, bg="lightgrey", text="Select",bd=7,font=("Arial",13),width=15, command=select)
+select_btn.grid(row=1,column=1,padx=3,pady=2)
 
 
 
@@ -190,15 +242,15 @@ search_frame.pack(side=tk.TOP, fill=tk.X)
 search_label=tk.Label(search_frame,text="Search",bg="lightgrey",font=("Arial",14))
 search_label.grid(row=0,column=0,padx=2,pady=2)
 
-search_in =ttk.Combobox(search_frame,font=("Arial", 14),state="readonly",textvariable=search)
+search_in =ttk.Combobox(search_frame,font=("Arial", 14),state="readonly",textvariable=searchin)
 search_in['value']=("ID no.","Name", "Sex","Course", "Year Level")
 search_in.grid(row=0,column=1,padx=12,pady=2)
 
-search_btn = tk.Button(search_frame,text="Search",font=("Arial",13),bd=9,width=12,bg="lightgrey")
+search_btn = tk.Button(search_frame,text="Search",font=("Arial",13),bd=9,width=12,bg="lightgrey",command = search)
 search_btn.grid(row=0,column=2,padx=35,pady=2)
 
-show_btn = tk.Button(search_frame,text="Show",font=("Arial",13),bd=9,width=12,bg="lightgrey")
-show_btn.grid(row=0,column=3,padx=35,pady=2)
+reset_btn = tk.Button(search_frame,text="Reset",font=("Arial",13),bd=9,width=12,bg="lightgrey", command=reset)
+reset_btn.grid(row=0,column=3,padx=35,pady=2)
 
 
 # frame for treeview
