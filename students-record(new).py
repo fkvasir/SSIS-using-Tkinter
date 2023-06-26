@@ -1,126 +1,104 @@
-import csv
 import tkinter as tk
 from tkinter import messagebox
 
+students = []
 
-def add_record():
-    name = entry_name.get()
-    course = entry_course.get()
-    age = entry_age.get()
-    if name and course and age:
-        with open("records.csv", "a", newline="") as file:
-            writer = csv.writer(file)
-            writer.writerow([name, course, age])
-
-        messagebox.showinfo("Record Added", "Record has been added successfully.")
+def add_student():
+    name = name_entry.get()
+    course = course_entry.get()
+    if name and course:
+        students.append({'name': name, 'course': course})
+        messagebox.showinfo('Success', 'Student added successfully!')
         clear_entries()
+        update_student_listbox()
     else:
-        messagebox.showerror("Error", "Please enter both name and course.")
+        messagebox.showerror('Error', 'Please enter both name and course.')
 
-
-def delete_record():
-    selected_index = listbox.curselection()
-
+def edit_student():
+    selected_index = student_listbox.curselection()
     if selected_index:
-        confirmation = messagebox.askyesno(
-            "Confirm Deletion", "Are you sure you want to delete this record?"
-        )
-
-        if confirmation:
-            with open("records.csv", "r") as file:
-                records = list(csv.reader(file))
-
-            del records[selected_index[0]]
-
-            with open("records.csv", "w", newline="") as file:
-                writer = csv.writer(file)
-                writer.writerows(records)
-
-            messagebox.showinfo(
-                "Record Deleted", "Record has been deleted successfully."
-            )
-            load_records()
-    else:
-        messagebox.showerror("Error", "Please select a record to delete.")
-
-
-def edit_record():
-    selected_index = listbox.curselection()
-
-    if selected_index:
-        name = entry_name.get()
-        course = entry_course.get()
-        age = entry_age.get()
-
-        if name and course and age:
-            with open("records.csv", "r") as file:
-                records = list(csv.reader(file))
-
-            records[selected_index[0]] = [name, course, age]
-
-            with open("records.csv", "w", newline="") as file:
-                writer = csv.writer(file)
-                writer.writerows(records)
-
-            messagebox.showinfo(
-                "Record Updated", "Record has been updated successfully."
-            )
+        selected_student = students[selected_index[0]]
+        name = name_entry.get()
+        course = course_entry.get()
+        if name and course:
+            selected_student['name'] = name
+            selected_student['course'] = course
+            messagebox.showinfo('Success', 'Student edited successfully!')
             clear_entries()
-            load_records()
+            update_student_listbox()
         else:
-            messagebox.showerror("Error", "Please enter both name and course.")
+            messagebox.showerror('Error', 'Please enter both name and course.')
     else:
-        messagebox.showerror("Error", "Please select a record to edit.")
+        messagebox.showerror('Error', 'Please select a student.')
 
-
-def load_records():
-    listbox.delete(0, tk.END)
-
-    with open("records.csv", "r") as file:
-        records = csv.reader(file)
-        for row in records:
-            listbox.insert(tk.END, f"Name: {row[0]}, Course: {row[1]}")
-
+def search_student():
+    search_name = search_entry.get()
+    if search_name:
+        found_students = [student for student in students if search_name.lower() in student['name'].lower()]
+        student_listbox.delete(0, tk.END)
+        for student in found_students:
+            student_listbox.insert(tk.END, student['name'])
+    else:
+        messagebox.showerror('Error', 'Please enter a name to search.')
 
 def clear_entries():
-    entry_name.delete(0, tk.END)
-    entry_course.delete(0, tk.END)
-    entry_age.delete(0,tk.END)
+    name_entry.delete(0, tk.END)
+    course_entry.delete(0, tk.END)
 
+def update_student_listbox():
+    student_listbox.delete(0, tk.END)
+    for student in students:
+        student_listbox.insert(tk.END, student['name'])
 
 root = tk.Tk()
-root.title("Student Information System")
+root.title('Student Management System')
 
-frame = tk.Frame(root)
-frame.pack(pady=20)
+# Student Listbox
+student_listbox = tk.Listbox(root)
+student_listbox.pack(side=tk.LEFT, padx=10)
+student_listbox.bind('<<ListboxSelect>>', lambda event: populate_entries())
 
-label_name = tk.Label(frame, text="Name:")
-label_name.grid(row=0, column=0)
-entry_name = tk.Entry(frame)
-entry_name.grid(row=0, column=1)
+# Scrollbar
+scrollbar = tk.Scrollbar(root)
+scrollbar.pack(side=tk.LEFT, fill=tk.Y)
+student_listbox.config(yscrollcommand=scrollbar.set)
+scrollbar.config(command=student_listbox.yview)
 
-label_course = tk.Label(frame, text="Course:")
-label_course.grid(row=1, column=0)
-entry_course = tk.Entry(frame)
-entry_course.grid(row=1, column=1)
+# Name Label and Entry
+name_label = tk.Label(root, text='Name:')
+name_label.pack(pady=5)
+name_entry = tk.Entry(root)
+name_entry.pack()
 
-label_age = tk.Label(frame, text="Age:")
-label_age.grid(row= 2,column= 0)
-entry_age = tk.Entry(frame)
-entry_age.grid(row=2,column=1)
+# Course Label and Entry
+course_label = tk.Label(root, text='Course:')
+course_label.pack(pady=5)
+course_entry = tk.Entry(root)
+course_entry.pack()
 
-button_add = tk.Button(root, text="Add Record", command=add_record)
-button_add.pack(pady=10)
+# Search Label and Entry
+search_label = tk.Label(root, text='Search:')
+search_label.pack(pady=5)
+search_entry = tk.Entry(root)
+search_entry.pack()
 
-button_delete = tk.Button(root, text="Delete Record", command=delete_record)
-button_delete.pack(pady=5)
+# Buttons
+add_button = tk.Button(root, text='Add Student', command=add_student)
+add_button.pack(pady=5)
 
-button_edit = tk.Button(root, text="Edit Record", command=edit_record)
-button_edit.pack(pady=5)
+edit_button = tk.Button(root, text='Edit Student', command=edit_student)
+edit_button.pack(pady=5)
 
-listbox = tk.Listbox(root, width=50)
-listbox.pack(pady=5)
+search_button = tk.Button(root, text='Search Student', command=search_student)
+search_button.pack(pady=5)
 
-load_records()
+def populate_entries():
+    selected_index = student_listbox.curselection()
+    if selected_index:
+        selected_student = students[selected_index[0]]
+        name_entry.delete(0, tk.END)
+        name_entry.insert(tk.END, selected_student['name'])
+        course_entry.delete(0, tk.END)
+        course_entry.insert(tk.END, selected_student['course'])
 
 root.mainloop()
