@@ -1,5 +1,5 @@
 import tkinter as tk
-# import pymysql
+import pymysql
 from tkinter import ttk
 from tkinter import messagebox
 
@@ -13,17 +13,50 @@ def connection():
     return conn
 
 def refreshTable():
-    for data in stud_table
-    
-    
-    
-    
-    
-    
+    for data in stud_table.get_children():
+        stud_table.delete(data)
+        
+    for array in read():
+        stud_table.insert(parent='',index='end',iid=array,text="",values=(array),tag="orow")
+        
+    stud_table.tag_configure('orow', background='EEEEEEE',font=('Arial',12))
+        
     
 app = tk.Tk()
 app.geometry("1300x680")
 app.title("SSIS version 2.0")
+
+
+# functions
+def read():
+    conn = connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM students")
+    results = cursor.fetchall()
+    conn.commit()
+    conn.close()
+    return results
+
+def add():
+    id = str(id_entry.get())
+    name = str(name_entry.get())
+    sex = str(sex_entry.get())
+    course = str(course_entry.get())
+    year = str(year_entry.get())
+    
+    if (id =="" or id==" ") or (name =="" or name ==" ") or (sex =="" or sex ==" ") or (course =="" or course ==" ") or (year =="" or year ==" "):
+        messagebox.showinfo("Error", "Please fill up the blank entry")
+    else:
+        try:
+            conn = connection()
+            cursor = conn.cursor()
+            cursor.execute("INSERT INTO student VALUES ('"+ id+"','"+name+"','"+sex+"','"+course+"','"+year"')")
+            conn.commit()
+            conn.close()
+        except:
+            messagebox.showinfo("Error","ID already exist")
+            return
+
 
 title_label = tk.Label(app, text="Simple Student Information System v2.0", font=("Arial", 30, "bold"), border=12, relief= tk.GROOVE, bg = "lightgrey")
 title_label.pack(side=tk.TOP,fill=tk.X)
@@ -203,7 +236,6 @@ stud_table.pack(fill=tk.BOTH,expand=True)
 
 # stud_table.bind("<ButtonRelease-1>",getcur)
 
-# fetch_data()
+refreshTable()
 
 app.mainloop()
-# https://www.youtube.com/watch?v=CrwobihQPHk
