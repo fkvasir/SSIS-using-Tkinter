@@ -10,6 +10,7 @@ app.title("SSIS version 2.0")
 title_label = tk.Label(app, text="Simple Student Information System v2.0", font=("Arial", 30, "bold"), border=12, relief= tk.GROOVE, bg = "lightgrey")
 title_label.pack(side=tk.TOP,fill=tk.X)
 
+# frames
 detail_frame = tk.LabelFrame(app, text="Information",font=("Arial",20),bd=12,relief=tk.GROOVE,bg="lightgrey")
 detail_frame.place(x=20,y=90,width=450,height=575)
 
@@ -17,7 +18,7 @@ data_frame = tk.Frame(app, bg="lightgrey",relief=tk.GROOVE)
 data_frame.place(x=475,y=90,width=810,height=575)
 
 
-
+# __init__ variables
 id= tk.StringVar()
 name=tk.StringVar()
 sex=tk.StringVar()
@@ -26,7 +27,7 @@ search=tk.StringVar()
 course =tk.StringVar()
 
 
-
+# entries and labels >> detail frame
 id_label = tk.Label(detail_frame, text="ID no.",font=("Arial", 13), bg= "lightgrey")
 id_label.grid(row=0,column=0,padx=2,pady=2)
 id_entry = tk.Entry(detail_frame,bd=7,font=("Arial",17),textvariable=id)
@@ -111,27 +112,30 @@ year_entry.grid(row=4,column=1,padx=2,pady=15)
 #     fetch_data()
 
 
+# button frame
 btn_frame= tk.Frame(detail_frame, bg="lightgrey",bd=10,relief=tk.GROOVE)
 btn_frame.place(x=40,y=390,width=342,height=120)
 
-add_btn = tk.Button(btn_frame,bg="lightgrey",text="ADD",bd=7,font=("Arial",13),width=15)
+# buttons >> btn frame
+add_btn = tk.Button(btn_frame,bg="lightgrey",text="Add",bd=7,font=("Arial",13),width=15)
 add_btn.grid(row=0,column=0,padx=2,pady=2)
 
-update_btn = tk.Button(btn_frame, bg="lightgrey", text="UPDATE",bd=7,font=("Arial",13),width=15,)
+update_btn = tk.Button(btn_frame, bg="lightgrey", text="Update",bd=7,font=("Arial",13),width=15,)
 update_btn.grid(row=0,column=1,padx=3,pady=2)
 
-delete_btn = tk.Button(btn_frame,bg="lightgrey",text="DELETE",bd=7,font=("Arial",13),width=15)
+delete_btn = tk.Button(btn_frame,bg="lightgrey",text="Delete",bd=7,font=("Arial",13),width=15)
 delete_btn.grid(row=1,column=0,padx=2,pady=2)
 
-clear_btn = tk.Button(btn_frame, bg="lightgrey", text="CLEAR",bd=7,font=("Arial",13),width=15)
+clear_btn = tk.Button(btn_frame, bg="lightgrey", text="Clear",bd=7,font=("Arial",13),width=15)
 clear_btn.grid(row=1,column=1,padx=3,pady=2)
 
 
 
-
+# top right frame
 search_frame = tk.Frame(data_frame,bg="lightgrey",bd=10,relief=tk.GROOVE)
 search_frame.pack(side=tk.TOP, fill=tk.X)
 
+# search and show buttons
 search_label=tk.Label(search_frame,text="Search",bg="lightgrey",font=("Arial",14))
 search_label.grid(row=0,column=0,padx=2,pady=2)
 
@@ -146,6 +150,7 @@ show_btn = tk.Button(search_frame,text="Show",font=("Arial",13),bd=9,width=12,bg
 show_btn.grid(row=0,column=3,padx=35,pady=2)
 
 
+# frame for treeview
 main_frame=tk.Frame(data_frame,bg="lightgrey", bd=11,relief=tk.GROOVE)
 main_frame.pack(fill=tk.BOTH,expand=True)
 
