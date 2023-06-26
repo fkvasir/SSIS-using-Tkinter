@@ -17,7 +17,7 @@ title_label.pack(side=tk.TOP,fill=tk.X)
 detail_frame = tk.LabelFrame(root, text="Information",font=("Arial",13),bd=12,relief=tk.GROOVE,bg="lightgrey")
 detail_frame.place(x=20,y=90,width=450,height=575)
 
-data_frame = tk.Frame(root, bg="lightgrey",relief=tk.GROOVE)
+data_frame = tk.Frame(root, bg="lightgrey",bd=12,relief=tk.GROOVE)
 data_frame.place(x=475,y=90,width=810,height=575)
 
 # __init__ variables
@@ -113,23 +113,23 @@ def edit_data():
         entry_courses.grid(row=1, column=1)
         entry_courses.insert(tk.END, ', '.join(selected_data[1:2]))
 
-        label_id = tk.Label(frame_edit,text="ID no.:")
+        label_id = tk.Label(frame_edit,text="Sex:")
         label_id.grid(row = 2, column = 0)
         entry_id = tk.Entry(frame_edit)
         entry_id.grid(row = 2, column = 1)
         entry_id.insert(tk.END, ', '.join(selected_data[2:3]))
 
-        label_sex = tk.Label(frame_edit, text = "Sex:" )
+        label_sex = tk.Label(frame_edit, text = "ID no:" )
         label_sex.grid(row = 3, column = 0)
         entry_sex = tk.Entry(frame_edit)
         entry_sex.grid(row = 3, column = 1)
         entry_sex.insert(tk.END, ', '.join(selected_data[3:4]))
         
         label_year = tk.Label(frame_edit, text = "Year:" )
-        label_year.grid(row = 3, column = 0)
+        label_year.grid(row = 4, column = 0)
         entry_year = tk.Entry(frame_edit)
-        entry_year.grid(row = 3, column = 1)
-        entry_year.insert(tk.END, ', '.join(selected_data[4]))
+        entry_year.grid(row = 4, column = 1)
+        entry_year.insert(tk.END, ', '.join(selected_data[4:5]))
 
         button_save = tk.Button(window_edit, text="Save Changes", command=lambda: save_changes(selected_index[:]))
         button_save.pack(pady=10)
@@ -140,18 +140,18 @@ def edit_data():
 def save_changes(selected_index):
     new_name = entry_name.get()
     new_courses = entry_course.get().split(', ')
-    new_id = entry_id.get().split(', ')
     new_sex = entry_sex.get().split(', ')
+    new_id = entry_id.get().split(', ')
     new_year = entry_year.get().split(', ')
 
     with open('student_courses.csv', 'r') as file:
         records = list(csv.reader(file))
 
-    records[selected_index][0] = new_name
-    records[selected_index][1:2] = new_courses
-    records[selected_index][2:3] = new_sex
-    records[selected_index][3:4] = new_id
-    records[selected_index][4] = new_year
+    records[selected_index[0]] = new_name
+    records[selected_index[1]] = new_courses
+    records[selected_index[2]] = new_sex
+    records[selected_index[3]] = new_id
+    records[selected_index[4]]= new_year
 
     with open('student_courses.csv', 'w', newline='') as file:
         writer = csv.writer(file)
@@ -216,23 +216,23 @@ entry_year = tk.Entry(detail_frame,bd=7,font=("Arial",13),textvariable=year)
 entry_year.grid(row=5, column=1)
 
 # >> add course to listbox
-button_add_course = tk.Button(detail_frame, text="Add Course",bg="lightgrey",bd=2,font=("Arial",5),width=5, command=add_course)
-button_add_course.place(x=345,y=155)
+button_add_course = tk.Button(detail_frame, text="Add Course",bg="lightgrey",bd=7,font=("Arial",7),width=10, command=add_course)
+button_add_course.place(x=342,y=151)
 
 # buttons >> button frame
 btn_frame= tk.Frame(detail_frame, bg="lightgrey",bd=10,relief=tk.GROOVE)
-btn_frame.place(x=40,y=390,width=342,height=120)
+btn_frame.place(x=100,y=430,width=255,height=95)
 
 
-button_save_selection = tk.Button(btn_frame, text="Save",bg="lightgrey",bd=2,font=("Arial",5),width=5, command=save_selection)
+button_save_selection = tk.Button(btn_frame, text="Save",bg="lightgrey",bd=7,font=("Arial",7),width=15, command=save_selection)
 button_save_selection.grid(row=0,column=0,padx=2,pady=2)
 
 
-button_edit_data = tk.Button(btn_frame, bg="lightgrey", text="Edit",bd=7,font=("Arial",13),width=15,command=edit_data)
+button_edit_data = tk.Button(btn_frame, bg="lightgrey", text="Edit",bd=7,font=("Arial",7),width=15,command=edit_data)
 button_edit_data.grid(row=0, column=1, padx=2, pady=2)
 
 
-clear_btn = tk.Button(btn_frame, bg="lightgrey", text="Clear",bd=7,font=("Arial",13),width=15, command=clear_entries)
+clear_btn = tk.Button(btn_frame, bg="lightgrey", text="Clear",bd=7,font=("Arial",7),width=15, command=clear_entries)
 clear_btn.grid(row=1,column=1,padx=3,pady=2)
 
 
@@ -251,15 +251,15 @@ search_entry.grid(row=0,column=1,padx=12,pady=2)
 
 
 # buttons >> search_frame
-button_remove_data = tk.Button(search_frame, text="Remove Data", command=remove_data)
-button_remove_data.grid(row=0, column=3, padx=5)
+button_remove_data = tk.Button(search_frame, text="Remove Data",bg="lightgrey", bd=7,font=("Arial",7),width=15, command=remove_data)
+button_remove_data.place(x=570,y=2)
 
-search_btn = tk.Button(search_frame,bg="lightgrey",text="Search",bd=7,font=("Arial",13),width=12)
-search_btn.grid(row=0,column=2,padx=2,pady=2)
+search_btn = tk.Button(search_frame,bg="lightgrey",text="Search",bd=7,font=("Arial",7),width=15)
+search_btn.place(x=420,y=2)
 
 # listbox data
-listbox_data = tk.Listbox(root, width=50)
-listbox_data.pack(pady=10)
+listbox_data = tk.Listbox(data_frame, width=50)
+listbox_data.place(x=75,y=90,width=670,height=450)
 
 
 load_data()
