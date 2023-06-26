@@ -49,7 +49,9 @@ def save_selection():
     if student_name and student_id and student_sex and selected_courses and student_year:
         courses = [listbox_courses.get(index) for index in selected_courses]
         with open('student_courses.csv', 'a', newline='') as file:
-            writer = csv.writer(file)
+            writer = csv.writer(
+                file
+            )
             writer.writerow([student_name] + courses + [student_sex] + [student_id]+ [student_year])
         
         messagebox.showinfo("Selection Saved", "Selection has been saved successfully.")
