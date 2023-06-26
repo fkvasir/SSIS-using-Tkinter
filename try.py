@@ -160,6 +160,15 @@ def save_changes(selected_index):
     entry_course.delete(0, tk.END)
     load_data()
 
+# def search_student():
+#     search_name = search_entry.get()
+#     if search_name:
+#         found_students = [student for student in students if search_name.lower() in student['name'].lower()]
+#         listbox_data.delete(0, tk.END)
+#         for student in found_students:
+#             listbox_data.insert(tk.END, student['name'])
+#     else:
+#         messagebox.showerror('Error', 'Please enter a name to search.')
 
 def clear_entries():
     entry_name.delete(0, tk.END)
@@ -234,8 +243,8 @@ search_frame.pack(side=tk.TOP, fill=tk.X)
 search_label=tk.Label(search_frame,text="Search",bg="lightgrey",font=("Arial",14))
 search_label.grid(row=0,column=0,padx=2,pady=2)
 
-search_in =ttk.Entry(search_frame,font=("Arial", 14),textvariable=search)
-search_in.grid(row=0,column=1,padx=12,pady=2)
+search_entry =ttk.Entry(search_frame,font=("Arial", 14),textvariable=search)
+search_entry.grid(row=0,column=1,padx=12,pady=2)
 
 
 
