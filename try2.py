@@ -3,6 +3,24 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 
+
+
+# connections
+def connection():
+    conn = pymysql.connect(
+        host = 'localhost', user='app',password='',db='student_db'
+    )
+    return conn
+
+def refreshTable():
+    for data in stud_table
+    
+    
+    
+    
+    
+    
+    
 app = tk.Tk()
 app.geometry("1300x680")
 app.title("SSIS version 2.0")
@@ -157,6 +175,8 @@ main_frame.pack(fill=tk.BOTH,expand=True)
 y_scroll = tk.Scrollbar(main_frame, orient = tk.VERTICAL)
 x_scroll = tk.Scrollbar(main_frame, orient = tk.HORIZONTAL)
 
+
+# Treeview
 stud_table = ttk.Treeview(main_frame,columns=("ID no.","Name", "Sex","Course","Year Level"),yscrollcommand=y_scroll.set,xscrollcommand=x_scroll.set)
 
 y_scroll.config(command=stud_table.yview)
