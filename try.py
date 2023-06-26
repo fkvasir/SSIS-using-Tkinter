@@ -53,11 +53,7 @@ def save_selection():
             writer.writerow([student_name] + courses + [student_sex] + [student_id]+ [student_year])
         
         messagebox.showinfo("Selection Saved", "Selection has been saved successfully.")
-        entry_name.delete(0, tk.END)
-        entry_id.delete(0,tk.END)
-        entry_sex.delete(0,tk.END)
-        entry_year.delete(0,tk.END)
-            # listbox_courses.selection_clear(0, tk.END)
+
     else:
         messagebox.showerror("Error", "Please enter a student name, id and age and select at most one course.")
 
@@ -171,7 +167,7 @@ def clear_entries():
     entry_sex.delete(0,tk.END)
     entry_id.delete(0,tk.END)
     entry_year.delete(0,tk.END)
-
+    listbox_courses.selection_clear(0, tk.END)
 
 
 # labels and entries >>>detail frame
@@ -186,9 +182,6 @@ label_name.grid(row=1,column=0,padx=2,pady=10)
 entry_name = tk.Entry(detail_frame,bd=7,font=("Arial",13),textvariable=name)
 entry_name.grid(row=1 ,column=1,padx=2,pady=10)
 
-
-listbox_data = tk.Listbox(root, width=50)
-listbox_data.pack(pady=10)
 
 sex_label = tk.Label(detail_frame, text="Sex",font=("Arial", 13), bg= "lightgrey")
 sex_label.grid(row=2,column=0,padx=2,pady=10)
@@ -257,6 +250,9 @@ button_remove_data.grid(row=0, column=1, padx=5)
 
 search_btn = tk.Button(search_frame,bg="lightgrey",text="Search",bd=7,font=("Arial",13),width=15)
 search_btn.grid(row=1,column=0,padx=2,pady=2)
+
+listbox_data = tk.Listbox(root, width=50)
+listbox_data.pack(pady=10)
 
 
 load_data()
