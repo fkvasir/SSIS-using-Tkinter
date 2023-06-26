@@ -6,19 +6,24 @@ from tkinter import messagebox
 
 
 # connections
-def connection():
-    conn = pymysql.connect(
-        host = 'localhost', user='app',password='',db='student_db'
-    )
-    return conn
 
-def refreshTable():
-    for data in stud_table.get_children():
-        stud_table.delete(data)
-    for array in read():
-        stud_table.insert(parent='',index='end',iid=array,text="",values=(array),tag="orow")
-        
-    stud_table.tag_configure('orow', background='EEEEEEE',font=('Arial',12))
+# def connection():
+#     conn = pymysql.connect(
+#         host = "localhost", user="root",password="",db="student_db"
+#     )
+#     return conn
+
+def fetch_data():
+    conn = pymysql.connect(host="localhost",user="root",password="adalovelace",db="student_db")
+    curr = conn.cursor()
+    curr.execute("SELECT * FROM data")
+    rows = curr.fetchall()
+    if lens(rows)!=0:
+        stud_table.delete(*stud_table.get_children())
+        for row in rows:
+            stud_table.insert('',tk.END,values=row)
+        conn.commit()
+    conn.close()
         
         
         
@@ -59,7 +64,7 @@ def setph(word,num):
 def read():
     conn = connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM students")
+    cursor.execute("SELECT * FROM data")
     results = cursor.fetchall()
     conn.commit()
     conn.close()
@@ -85,7 +90,7 @@ def add():
             messagebox.showinfo("Error","ID already exist")
             return
         
-    refreshTable()
+    fetch_data()
 
 
 def reset():
@@ -102,7 +107,7 @@ def reset():
         except:
             messagebox.showinfo("Error","Sorry an error occured")
             return
-    refreshTable()
+    fetch_data()
         
 def delete():
     decision = messagebox.askquestion("Warning!", "Delete the selected data?")
@@ -120,7 +125,7 @@ def delete():
         except:
             messagebox.showinfo("Error","Sorry an error occured")
             return
-    refreshTable()
+    fetch_data()
         
 def select():
     try:
@@ -172,7 +177,7 @@ def update():
             messagebox.showinfo("Error","ID already exist")
             return
         
-    refreshTable()
+    fetch_data()
     
     
         
@@ -323,6 +328,6 @@ stud_table.pack(fill=tk.BOTH,expand=True)
 
 # stud_table.bind("<ButtonRelease-1>",getcur)
 
-refreshTable()
+fetch_data()
 
 app.mainloop()
