@@ -55,7 +55,7 @@ def save_selection():
         messagebox.showinfo("Selection Saved", "Selection has been saved successfully.")
 
     else:
-        messagebox.showerror("Error", "Please enter a student name, id and age and select at most one course.")
+        messagebox.showerror("Error", "Please enter a student name, id, sex and year level and select at most one course.")
 
 def remove_data():
     selected_index = listbox_data.curselection()
@@ -117,19 +117,19 @@ def edit_data():
         entry_id.grid(row = 2, column = 1)
         entry_id.insert(tk.END, ', '.join(selected_data[2:3]))
 
-        label_age = tk.Label(frame_edit, text = "Age:" )
-        label_age.grid(row = 3, column = 0)
-        entry_age = tk.Entry(frame_edit)
-        entry_age.grid(row = 3, column = 1)
-        entry_age.insert(tk.END, ', '.join(selected_data[3:]))
+        label_sex = tk.Label(frame_edit, text = "Sex:" )
+        label_sex.grid(row = 3, column = 0)
+        entry_sex = tk.Entry(frame_edit)
+        entry_sex.grid(row = 3, column = 1)
+        entry_sex.insert(tk.END, ', '.join(selected_data[3:4]))
         
         label_year = tk.Label(frame_edit, text = "Year:" )
         label_year.grid(row = 3, column = 0)
         entry_year = tk.Entry(frame_edit)
         entry_year.grid(row = 3, column = 1)
-        entry_year.insert(tk.END, ', '.join(selected_data[3:]))
+        entry_year.insert(tk.END, ', '.join(selected_data[4]))
 
-        button_save = tk.Button(window_edit, text="Save Changes", command=lambda: save_changes(selected_index))
+        button_save = tk.Button(window_edit, text="Save Changes", command=lambda: save_changes(selected_index[:]))
         button_save.pack(pady=10)
 
     else:
@@ -145,11 +145,11 @@ def save_changes(selected_index):
     with open('student_courses.csv', 'r') as file:
         records = list(csv.reader(file))
 
-    records[selected_index][1:1] = new_name
+    records[selected_index][0] = new_name
     records[selected_index][1:2] = new_courses
     records[selected_index][2:3] = new_sex
     records[selected_index][3:4] = new_id
-    records[selected_index][4:4] = new_year
+    records[selected_index][4] = new_year
 
     with open('student_courses.csv', 'w', newline='') as file:
         writer = csv.writer(file)
@@ -234,23 +234,19 @@ search_frame.pack(side=tk.TOP, fill=tk.X)
 search_label=tk.Label(search_frame,text="Search",bg="lightgrey",font=("Arial",14))
 search_label.grid(row=0,column=0,padx=2,pady=2)
 
-
-search_in =ttk.Combobox(search_frame,font=("Arial", 14),state="readonly",textvariable=search)
-search_in['value']=("ID no.","Name", "Sex","Course", "Year Level")
+search_in =ttk.Entry(search_frame,font=("Arial", 14),textvariable=search)
 search_in.grid(row=0,column=1,padx=12,pady=2)
 
 
-search_btn = tk.Button(search_frame,text="Search",font=("Arial",13),bd=9,width=12,bg="lightgrey")
-search_btn.grid(row=0,column=2,padx=35,pady=2)
 
-
-# buttons >> data_frame
+# buttons >> search_frame
 button_remove_data = tk.Button(search_frame, text="Remove Data", command=remove_data)
-button_remove_data.grid(row=0, column=1, padx=5)
+button_remove_data.grid(row=0, column=3, padx=5)
 
-search_btn = tk.Button(search_frame,bg="lightgrey",text="Search",bd=7,font=("Arial",13),width=15)
-search_btn.grid(row=1,column=0,padx=2,pady=2)
+search_btn = tk.Button(search_frame,bg="lightgrey",text="Search",bd=7,font=("Arial",13),width=12)
+search_btn.grid(row=0,column=2,padx=2,pady=2)
 
+# listbox data
 listbox_data = tk.Listbox(root, width=50)
 listbox_data.pack(pady=10)
 
