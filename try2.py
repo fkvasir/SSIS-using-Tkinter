@@ -15,7 +15,6 @@ def connection():
 def refreshTable():
     for data in stud_table.get_children():
         stud_table.delete(data)
-        
     for array in read():
         stud_table.insert(parent='',index='end',iid=array,text="",values=(array),tag="orow")
         
@@ -72,9 +71,9 @@ def add():
     sex = str(sex_entry.get())
     course = str(course_entry.get())
     year = str(year_entry.get())
-    
     if (id =="" or id==" ") or (name =="" or name ==" ") or (sex =="" or sex ==" ") or (course =="" or course ==" ") or (year =="" or year ==" "):
         messagebox.showinfo("Error", "Please fill up the blank entry")
+        return
     else:
         try:
             conn = connection()
@@ -131,7 +130,6 @@ def select():
         sex = str(stud_table.item(selected_item)['values'][2])
         year = str(stud_table.item(selected_item)['values'][3])
         course = str(stud_table.item(selected_item)['values'][4])
-
         setph(id,1)
         setph(name,2)
         setph(sex,3)
@@ -140,6 +138,43 @@ def select():
         
     except:
         messagebox.showinfo("Error","Please select a data row")
+        
+        
+def update():
+    selectedID = ""
+    try:
+        selected_item=stud_table.selection()[0]
+        selectedID = str(stud_table.item(selected_item)['values'][0])
+    except:
+        messagebox.showinfo("Error","Please select a data row")
+    id = str(id_entry.get())
+    name = str(name_entry.get())
+    sex = str(sex_entry.get())
+    course = str(course_entry.get())
+    year = str(year_entry.get())
+    if (id =="" or id==" ") or (name =="" or name ==" ") or (sex =="" or sex ==" ") or (course =="" or course ==" ") or (year =="" or year ==" "):
+        messagebox.showinfo("Error", "Please fill up the blank entry")
+        return
+    else:
+        try:
+            conn = connection()
+            cursor = conn.cursor()
+            cursor.execute("UPDATE student SET ID='"+
+                           id+"', NAME='"+
+                           name+"', SEX='"+
+                           sex+"', COURSE='"+
+                           course+"', YEAR='"+
+                           year+"', WHERE ID='"+
+                           selectedID+"' ")
+            conn.commit()
+            conn.close()
+        except:
+            messagebox.showinfo("Error","ID already exist")
+            return
+        
+    refreshTable()
+    
+    
         
 def search():
     id = str(id_entry.get())
