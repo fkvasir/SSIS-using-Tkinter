@@ -187,6 +187,105 @@ def search():
 
     conn.close()
     
+def add_course(course_code, course_name):
+    conn = sqlite3.connect('courses.db')
+    cursor = conn.cursor()
+    
+    # Check if the course already exists in the database
+    cursor.execute("SELECT * FROM courses WHERE course_code = ?", (course_code,))
+    existing_course = cursor.fetchone()
+    if existing_course:
+        messagebox.showinfo("Error", "Course already exists.")
+        return
+    
+    # Insert the new course into the database
+    cursor.execute("INSERT INTO courses (course_code, course_name) VALUES (?, ?)", (course_code, course_name))
+    conn.commit()
+    conn.close()
+    
+    messagebox.showinfo("Success", "Course added successfully.")
+
+def update_course(course_code, new_course_name):
+    conn = sqlite3.connect('courses.db')
+    cursor = conn.cursor()
+    
+    # Check if the course exists in the database
+    cursor.execute("SELECT * FROM courses WHERE course_code = ?", (course_code,))
+    existing_course = cursor.fetchone()
+    if not existing_course:
+        messagebox.showinfo("Error", "Course does not exist.")
+        return
+    
+    # Update the course name in the database
+    cursor.execute("UPDATE courses SET course_name = ? WHERE course_code = ?", (new_course_name, course_code))
+    conn.commit()
+    conn.close()
+    
+    messagebox.showinfo("Success", "Course updated successfully.")
+
+def delete_course(course_code):
+    conn = sqlite3.connect('courses.db')
+    cursor = conn.cursor()
+    
+    # Check if the course exists in the database
+    cursor.execute("SELECT * FROM courses WHERE course_code = ?", (course_code,))
+    existing_course = cursor.fetchone()
+    if not existing_course:
+        messagebox.showinfo("Error", "Course does not exist.")
+        return
+    
+    # Delete the course from the database
+    cursor.execute("DELETE FROM courses WHERE course_code = ?", (course_code,))
+    conn.commit()
+    conn.close()
+    
+    messagebox.showinfo("Success", "Course deleted successfully.")
+
+def search_course(search_term):
+    conn = sqlite3.connect('courses.db')
+    cursor = conn.cursor()
+
+    # Execute the search query
+    cursor.execute("SELECT * FROM courses WHERE course_code LIKE ? OR course_name LIKE ?",
+                   (f"%{search_term}%", f"%{search_term}%"))
+
+    results = cursor.fetchall()
+    conn.close()
+    return results
+
+
+def open_courses_window():
+    # Create a new window
+    courses_window = tk.Toplevel()
+    courses_window.title("Courses")
+    
+    # Create a TreeView widget
+    courses_treeview = ttk.Treeview(courses_window)
+    courses_treeview["columns"] = ("course_code", "course_name")
+    
+    # Configure column names and properties
+    courses_treeview.column("#0", width=0, stretch=tk.NO)
+    courses_treeview.column("course_code", width=100, anchor=tk.CENTER)
+    courses_treeview.column("course_name", width=200, anchor=tk.W)
+    
+    courses_treeview.heading("#0", text="")
+    courses_treeview.heading("course_code", text="Course Code")
+    courses_treeview.heading("course_name", text="Course Name")
+    
+    # Populate the TreeView with course data
+    conn = sqlite3.connect('courses.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM courses")
+    courses = cursor.fetchall()
+    conn.close()
+    
+    for course in courses:
+        courses_treeview.insert("", tk.END, values=course)
+    
+    # Add the TreeView to the window
+    courses_treeview.pack(fill=tk.BOTH, expand=True)
+
+
 
 # Graphical User Interface
 
@@ -220,8 +319,11 @@ sex_entry = ttk.Combobox(detail_frame,font=("Arial",16),textvariable=sex)
 sex_entry['values']=("Male","Female")
 sex_entry.grid(row=2,column=1,padx=2,pady=15)
 
-course_label = tk.Label(detail_frame,text="Course", font=("Arial",13), bg="lightgrey")
-course_label.grid(row=3,column=0,padx=2,pady=15)
+
+
+course_button = tk.Label(detail_frame,text="Course", font=("Arial",13), bg="lightgrey")
+courses_button = tk.Button(root, text="Courses", command=open_courses_window)
+course_button.grid(row=3,column=0,padx=2,pady=15)
 
 course_entry = ttk.Combobox(detail_frame,font=("Arial",16),textvariable=course)
 course_entry['values']=("Computer Science","Public Administration")
@@ -292,6 +394,7 @@ stud_table.heading("Gender", text="Gender")
 stud_table.heading("Year Level", text="Year Level")
 stud_table.heading("Course", text="Course")
 stud_table.pack()
+
 
 # Populate the tree view with data
 results = read()
