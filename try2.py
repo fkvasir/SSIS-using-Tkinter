@@ -6,55 +6,11 @@ from tkinter import messagebox
 
 
 
-def add_student(name, id_number, gender, year_level, course):
-    conn = sqlite3.connect('students.db')
-    cursor = conn.cursor()
-
-    cursor.execute('''CREATE TABLE IF NOT EXISTS students
-                      (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                      name TEXT,
-                      id_number TEXT,
-                      gender TEXT,
-                      year_level INTEGER,
-                      course TEXT)''')
-
-    # Insert the student information into the table
-    cursor.execute('''INSERT INTO students (name, id_number, gender, year_level, course)
-                      VALUES (?, ?, ?, ?, ?)''', (name, id_number, gender, year_level, course))
-
-    # Commit the transaction and close the connection
-    conn.commit()
-    conn.close()
-
-    print("Student information added successfully!")
-
-# Example usage
-add_student("John Doe", "2021001", "Male", 2, "Computer Science")
-
-
-def fetch_data():
-    conn = pymysql.connect(host="localhost",user="root",password="",db="student_db")
-    curr = conn.cursor()
-    curr.execute("SELECT * FROM data")
-    rows = curr.fetchall()
-    if lens(rows)!=0:
-        stud_table.delete(*stud_table.get_children())
-        for row in rows:
-            stud_table.insert('',tk.END,values=row)
-        conn.commit()
-    conn.close()
-        
-        
-        
-        
+  
 app = tk.Tk()
 app.geometry("1300x680")
 app.title("SSIS version 2.0")
 
-
-
-
-# functions
 
 # placeholders for entries
 # __init__ variables
@@ -81,149 +37,155 @@ def setph(word,num):
         searchin.set(word)
         
 def read():
-    conn = connection()
+    conn = sqlite3.connect('students.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM data")
+    cursor.execute("SELECT * FROM students")
     results = cursor.fetchall()
     conn.commit()
     conn.close()
     return results
 
-def add():
+def add(name, id_number, gender, year_level, course):
     id = str(id_entry.get())
     name = str(name_entry.get())
     sex = str(sex_entry.get())
     course = str(course_entry.get())
     year = str(year_entry.get())
-    if (id =="" or id==" ") or (name =="" or name ==" ") or (sex =="" or sex ==" ") or (course =="" or course ==" ") or (year =="" or year ==" "):
-        messagebox.showinfo("Error", "Please fill up the blank entry")
+
+    # Connect to database
+    conn = sqlite3.connect('students.db')
+    cursor = conn.cursor()
+    
+    if (id =="" or id==" ") or (name =="" or name ==" ") or (sex =="" or sex ==" ") or (course =="" or course ==" ") or (year =="" or year ==" "):  # if entries are empty >>
+        messagebox.showinfo("Error", "Please fill up the blank entry") # >> will show an error
         return
     else:
         try:
-            conn = connection()
-            cursor = conn.cursor()
-            cursor.execute("INSERT INTO student VALUES ('"+ id+"','"+name+"','"+sex+"','"+course+"','"+year+"')")
+            cursor.execute('''INSERT INTO students (name, id_number, gender, year_level, course)
+                      VALUES (?, ?, ?, ?, ?)''', (name, id_number, gender, year_level, course))
             conn.commit()
             conn.close()
-        except:
+            messagebox.showinfo("Success","Data added successfully")
+        except sqlite3.IntegrityError:
             messagebox.showinfo("Error","ID already exist")
             return
-        
-    fetch_data()
 
 
-def reset():
-    decision = messagebox.askquestion("Warning!", "Delete all data?")
-    if decision != "yes":
-         return
-    else:
-        try:
-            conn = connection()
-            cursor = conn.cursor()
-            cursor.execute("DELETE FROM students")
-            conn.commit()
-            conn.close()
-        except:
-            messagebox.showinfo("Error","Sorry an error occured")
-            return
-    fetch_data()
-        
+def reset_data():
+    
+    conn = sqlite3.connect('students.db')
+    cursor = conn.cursor()
+
+    cursor.execute('''DELETE FROM students''')
+
+    conn.commit()
+    conn.close()
+    messagebox.showinfo("Success","All students data reset.")
+
+
 def delete():
-    decision = messagebox.askquestion("Warning!", "Delete the selected data?")
-    if decision != "yes":
-        return
+    selected_id = id_entry.get()
+
+    
+    conn = sqlite3.connect('students.db')
+    cursor = conn.cursor()
+
+    cursor.execute('''DELETE FROM students WHERE id_number = ?''', (selected_id,))
+    
+    if cursor.rowcount > 0:
+        conn.commit()
+        conn.close()
+        messagebox.showinfo("Success", "Data deleted successfully.")
     else:
-        selected_item=stud_table.selection()[0]
-        deleteData = str(stud_table.item(selected_item)['values'][0])
-        try:
-            conn = connection()
-            cursor = conn.cursor()
-            cursor.execute("DELETE FROM students WHERE ID='"+ str(deleteData)+"'")
-            conn.commit()
-            conn.close()
-        except:
-            messagebox.showinfo("Error","Sorry an error occured")
-            return
-    fetch_data()
+        messagebox.showinfo("Error", "No matching student found.")
+
         
-def select():
+def select(event):
     try:
-        selected_item=stud_table.selection()[0]
-        id = str(stud_table.item(selected_item)['values'][0])
-        name = str(stud_table.item(selected_item)['values'][1])
-        sex = str(stud_table.item(selected_item)['values'][2])
-        year = str(stud_table.item(selected_item)['values'][3])
-        course = str(stud_table.item(selected_item)['values'][4])
-        setph(id,1)
-        setph(name,2)
-        setph(sex,3)
-        setph(year,4)
-        setph(course,5)
+        selected_item = stud_table.focus()
+        selected_data = stud_table.item(selected_item)['values']
+        if selected_data:
+            id_entry.delete(0, tk.END)
+            id_entry.insert(tk.END, selected_data[0])
+            name_entry.delete(0, tk.END)
+            name_entry.insert(tk.END, selected_data[1])
+            gender_entry.delete(0, tk.END)
+            gender_entry.insert(tk.END, selected_data[2])
+            year_entry.delete(0, tk.END)
+            year_entry.insert(tk.END, selected_data[3])
+            course_entry.delete(0, tk.END)
+            course_entry.insert(tk.END, selected_data[4])
         
     except:
         messagebox.showinfo("Error","Please select a data row")
         
         
 def update():
-    selectedID = ""
-    try:
-        selected_item=stud_table.selection()[0]
-        selectedID = str(stud_table.item(selected_item)['values'][0])
-    except:
-        messagebox.showinfo("Error","Please select a data row")
-    id = str(id_entry.get())
-    name = str(name_entry.get())
-    sex = str(sex_entry.get())
-    course = str(course_entry.get())
-    year = str(year_entry.get())
-    if (id =="" or id==" ") or (name =="" or name ==" ") or (sex =="" or sex ==" ") or (course =="" or course ==" ") or (year =="" or year ==" "):
-        messagebox.showinfo("Error", "Please fill up the blank entry")
-        return
-    else:
-        try:
-            conn = connection()
-            cursor = conn.cursor()
-            cursor.execute("UPDATE student SET ID='"+
-                           id+"', NAME='"+
-                           name+"', SEX='"+
-                           sex+"', COURSE='"+
-                           course+"', YEAR='"+
-                           year+"', WHERE ID='"+
-                           selectedID+"' ")
-            conn.commit()
-            conn.close()
-        except:
-            messagebox.showinfo("Error","ID already exist")
-            return
-        
-    fetch_data()
-    
-    
-        
-def search():
-    id = str(id_entry.get())
-    name = str(name_entry.get())
-    sex = str(sex_entry.get())
-    course = str(course_entry.get())
-    year = str(year_entry.get())
+    selected_id = id_entry.get()
+    new_name = name_entry.get()
+    new_gender = gender_entry.get()
+    new_year = year_entry.get()
+    new_course = course_entry.get()
 
-    conn = connection()
+
+    conn = sqlite3.connect('students.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM students WHERE ID='"+
-                   id+"' or NAME='"+
-                   name+"' or SEX='"+
-                   sex+"' or COURSE='"+
-                   course+"' or YEAR='"+
-                   year+"'  ")
-    try:
-        result = cursor.fetchall()
-        for num in range (0,5):
-            setph(result[0][num],(num+1))
-            
+
+
+    cursor.execute('''UPDATE students SET name=?, gender=?, year_level=?, course=? WHERE id_number=?''',
+                   (new_name, new_gender, new_year, new_course, selected_id))
+
+    if cursor.rowcount > 0:
         conn.commit()
         conn.close()
-    except:
-        messagebox.showinfo("Error","No data found")
+        messagebox.showinfo("Success", "Data updated successfully.")
+    else:
+        messagebox.showinfo("Error", "No matching student found.")
+
+    # Clear the entry fields
+    id_entry.delete(0, tk.END)
+    name_entry.delete(0, tk.END)
+    gender_entry.delete(0, tk.END)
+    year_entry.delete(0, tk.END)
+    course_entry.delete(0, tk.END)
+
+    refresh_data()
+
+# Function to refresh the data in the tree view
+def refresh_data():
+    # Clear the tree view
+    stud_table.delete(*stud_table.get_children())
+
+    
+    results = read()
+
+    for result in results:
+        stud_table.insert("", tk.END, values=result)
+    
+    
+        
+
+def search():
+    search_term = searchin.get()
+
+    # Connect to the database
+    conn = sqlite3.connect('students.db')
+    cursor = conn.cursor()
+
+    # Execute the search query
+    cursor.execute("SELECT * FROM students WHERE id_number LIKE ? OR name LIKE ? OR gender LIKE ? OR year_level LIKE ? OR course LIKE ?",
+                   (f"%{search_term}%", f"%{search_term}%", f"%{search_term}%", f"%{search_term}%", f"%{search_term}%"))
+
+    results = cursor.fetchall()
+
+    # Clear the tree view
+    stud_table.delete(*stud_table.get_children())
+
+    # Insert the search results into the tree view
+    for result in results:
+        stud_table.insert("", tk.END, values=result)
+
+    conn.close()
     
 
 # Graphical User Interface
@@ -279,13 +241,13 @@ btn_frame= tk.Frame(detail_frame, bg="lightgrey",bd=10,relief=tk.GROOVE)
 btn_frame.place(x=40,y=390,width=342,height=120)
 
 # buttons >> btn frame
-add_btn = tk.Button(btn_frame,bg="lightgrey",text="Add",bd=7,font=("Arial",13),width=15, command= add)
+add_btn = tk.Button(btn_frame,bg="lightgrey",text="Add",bd=7,font=("Arial",13),width=15, command=add)
 add_btn.grid(row=0,column=0,padx=2,pady=2)
 
-update_btn = tk.Button(btn_frame, bg="lightgrey", text="Update",bd=7,font=("Arial",13),width=15,command= update)
+update_btn = tk.Button(btn_frame, bg="lightgrey", text="Update",bd=7,font=("Arial",13),width=15,command=update)
 update_btn.grid(row=0,column=1,padx=3,pady=2)
 
-delete_btn = tk.Button(btn_frame,bg="lightgrey",text="Delete",bd=7,font=("Arial",13),width=15,command = delete )
+delete_btn = tk.Button(btn_frame,bg="lightgrey",text="Delete",bd=7,font=("Arial",13),width=15,command=delete )
 delete_btn.grid(row=1,column=0,padx=2,pady=2)
 
 select_btn = tk.Button(btn_frame, bg="lightgrey", text="Select",bd=7,font=("Arial",13),width=15, command=select)
@@ -321,32 +283,24 @@ x_scroll = tk.Scrollbar(main_frame, orient = tk.HORIZONTAL)
 
 
 # Treeview
-stud_table = ttk.Treeview(main_frame,columns=("ID no.","Name", "Sex","Course","Year Level"),yscrollcommand=y_scroll.set,xscrollcommand=x_scroll.set)
+# Create a tree view to display the student data
+stud_table = ttk.Treeview(window)
+stud_table["columns"] = ("ID Number", "Name", "Gender", "Year Level", "Course")
+stud_table.heading("ID Number", text="ID Number")
+stud_table.heading("Name", text="Name")
+stud_table.heading("Gender", text="Gender")
+stud_table.heading("Year Level", text="Year Level")
+stud_table.heading("Course", text="Course")
+stud_table.pack()
 
-y_scroll.config(command=stud_table.yview)
-x_scroll.config(command=stud_table.xview)
+# Populate the tree view with data
+results = read()
+for result in results:
+    stud_table.insert("", tk.END, values=result)
 
-y_scroll.pack(side=tk.RIGHT,fill=tk.Y)
-x_scroll.pack(side=tk.BOTTOM,fill=tk.X)
-
-stud_table.heading("ID no.",text="ID no")
-stud_table.heading("Name",text="Name")
-stud_table.heading("Sex",text="Sex")
-stud_table.heading("Course",text="Course")
-stud_table.heading("Year Level",text="Year Level")
-
-stud_table['show'] = 'headings'
-
-stud_table.column("ID no.",width=100)
-stud_table.column("Name",width=100)
-stud_table.column("Sex",width=100)
-stud_table.column("Course",width=100)
-stud_table.column("Year Level",width=100)
-stud_table.pack(fill=tk.BOTH,expand=True)
+# Bind the select function to the tree view selection event
+stud_table.bind("<<TreeviewSelect>>", select)
 
 
-# stud_table.bind("<ButtonRelease-1>",getcur)
-
-fetch_data()
 
 app.mainloop()
