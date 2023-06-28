@@ -1,5 +1,5 @@
 import tkinter as tk
-import pymysql
+import sqlite3
 from tkinter import ttk
 from tkinter import messagebox
 
