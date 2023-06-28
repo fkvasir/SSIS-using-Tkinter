@@ -327,8 +327,7 @@ year_entry.grid(row=4,column=1,padx=2,pady=15)
 
 
 # Courses
-course_button = tk.Label(detail_frame,text="Course", font=("Arial",13), bg="lightgrey")
-courses_button = tk.Button(root, text="Courses", command=open_courses_window)
+course_button = tk.Label(detail_frame, text="Courses",bg="lightgrey",bd=7,font=("Arial",7),width=10, command=open_courses_window)
 course_button.grid(row=3,column=0,padx=2,pady=15)
 
 course_entry = ttk.Combobox(detail_frame,font=("Arial",16),textvariable=course)
