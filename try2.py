@@ -14,7 +14,7 @@ from tkinter import messagebox
 #     return conn
 
 def fetch_data():
-    conn = pymysql.connect(host="localhost",user="root",password="adalovelace",db="student_db")
+    conn = pymysql.connect(host="localhost",user="root",password="",db="student_db")
     curr = conn.cursor()
     curr.execute("SELECT * FROM data")
     rows = curr.fetchall()
