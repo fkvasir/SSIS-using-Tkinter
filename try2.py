@@ -5,13 +5,32 @@ from tkinter import messagebox
 
 
 
-# connections
 
-# def connection():
-#     conn = pymysql.connect(
-#         host = "localhost", user="root",password="",db="student_db"
-#     )
-#     return conn
+def add_student(name, id_number, gender, year_level, course):
+    conn = sqlite3.connect('students.db')
+    cursor = conn.cursor()
+
+    cursor.execute('''CREATE TABLE IF NOT EXISTS students
+                      (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                      name TEXT,
+                      id_number TEXT,
+                      gender TEXT,
+                      year_level INTEGER,
+                      course TEXT)''')
+
+    # Insert the student information into the table
+    cursor.execute('''INSERT INTO students (name, id_number, gender, year_level, course)
+                      VALUES (?, ?, ?, ?, ?)''', (name, id_number, gender, year_level, course))
+
+    # Commit the transaction and close the connection
+    conn.commit()
+    conn.close()
+
+    print("Student information added successfully!")
+
+# Example usage
+add_student("John Doe", "2021001", "Male", 2, "Computer Science")
+
 
 def fetch_data():
     conn = pymysql.connect(host="localhost",user="root",password="",db="student_db")
