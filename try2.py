@@ -328,11 +328,11 @@ year_entry.grid(row=4,column=1,padx=2,pady=15)
 
 # Courses
 course_button = tk.Label(detail_frame, text="Courses",bg="lightgrey",bd=7,font=("Arial",7),width=10, command=open_courses_window)
-course_button.grid(row=3,column=0,padx=2,pady=15)
+course_button.grid(row=3,column=0,padx=1,pady=10)
 
-course_entry = ttk.Combobox(detail_frame,font=("Arial",16),textvariable=course)
-course_entry['values']=("Computer Science","Public Administration")
-course_entry.grid(row=3,column=1,padx=2,pady=15)
+course_entry = tk.Entry(detail_frame,bd=7,font=("Arial",13),textvariable=course)
+entry_course.grid(row=3, column=1, padx=1, pady=10)
+
 
 button_add_course = tk.Button(detail_frame, text="Add Course",bg="lightgrey",bd=7,font=("Arial",7),width=10, command=add_course)
 button_add_course.place(x=342,y=151)
