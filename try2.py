@@ -320,7 +320,13 @@ sex_entry['values']=("Male","Female")
 sex_entry.grid(row=2,column=1,padx=2,pady=15)
 
 
+year_label = tk.Label(detail_frame, text="Year Level",font=("Arial", 13), bg= "lightgrey")
+year_label.grid(row=4,column=0,padx=2,pady=15)
+year_entry = tk.Entry(detail_frame,bd=7,font=("Arial",17),textvariable=year)
+year_entry.grid(row=4,column=1,padx=2,pady=15)
 
+
+# Courses
 course_button = tk.Label(detail_frame,text="Course", font=("Arial",13), bg="lightgrey")
 courses_button = tk.Button(root, text="Courses", command=open_courses_window)
 course_button.grid(row=3,column=0,padx=2,pady=15)
@@ -329,11 +335,9 @@ course_entry = ttk.Combobox(detail_frame,font=("Arial",16),textvariable=course)
 course_entry['values']=("Computer Science","Public Administration")
 course_entry.grid(row=3,column=1,padx=2,pady=15)
 
-year_label = tk.Label(detail_frame, text="Year Level",font=("Arial", 13), bg= "lightgrey")
-year_label.grid(row=4,column=0,padx=2,pady=15)
+button_add_course = tk.Button(detail_frame, text="Add Course",bg="lightgrey",bd=7,font=("Arial",7),width=10, command=add_course)
+button_add_course.place(x=342,y=151)
 
-year_entry = tk.Entry(detail_frame,bd=7,font=("Arial",17),textvariable=year)
-year_entry.grid(row=4,column=1,padx=2,pady=15)
 
 
 
