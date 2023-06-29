@@ -225,7 +225,7 @@ entry_sex.grid(row=2,column=1,padx=2,pady=10)
 listbox_courses = tk.Listbox(detail_frame, width=50,bd=7)
 listbox_courses.grid(row=4,column=1,padx=2,pady=10)
 
-label_course = tk.Label(detail_frame, text="Course:", font=("Arial",13),bg="lightgrey")
+label_course = tk.Label(detail_frame, text="Course", font=("Arial",13),bg="lightgrey")
 label_course.grid(row=3, column=0,padx=1,pady=10)
 entry_course = tk.Entry(detail_frame,bd=7,font=("Arial",13),textvariable=course)
 entry_course.grid(row=3, column=1, padx=1, pady=10)
@@ -277,7 +277,7 @@ search_btn.place(x=385,y=2)
 button_edit_data = tk.Button(search_frame, bg="lightgrey", text="Edit",bd=7,font=("Arial",7),width=15,command=edit_data)
 button_edit_data.place(x=510,y=2)
 # listbox data
-listbox_data = tk.Listbox(data_frame, width=50)
+listbox_data = tk.Listbox(data_frame, width=50,bd=7)
 listbox_data.place(x=60,y=70,width=670,height=450)
 
 
