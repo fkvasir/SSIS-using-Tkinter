@@ -20,6 +20,7 @@ sex=tk.StringVar()
 year=tk.StringVar()
 course =tk.StringVar()
 searchin = tk.StringVar()
+coursecode=tk.StringVar()
 
 # placeholder values
 def setph(word,num):
@@ -35,6 +36,8 @@ def setph(word,num):
         course.set(word)
     if num == 1:
         searchin.set(word)
+    if num == 1:
+        coursecode.set(word)
         
 def read():
     conn = sqlite3.connect('students.db')
@@ -109,8 +112,8 @@ def select(event):
             id_entry.insert(tk.END, selected_data[0])
             name_entry.delete(0, tk.END)
             name_entry.insert(tk.END, selected_data[1])
-            gender_entry.delete(0, tk.END)
-            gender_entry.insert(tk.END, selected_data[2])
+            sex_entry.delete(0, tk.END)
+            sex_entry.insert(tk.END, selected_data[2])
             year_entry.delete(0, tk.END)
             year_entry.insert(tk.END, selected_data[3])
             course_entry.delete(0, tk.END)
@@ -123,7 +126,7 @@ def select(event):
 def update():
     selected_id = id_entry.get()
     new_name = name_entry.get()
-    new_gender = gender_entry.get()
+    new_gender = sex_entry.get()
     new_year = year_entry.get()
     new_course = course_entry.get()
 
@@ -145,7 +148,7 @@ def update():
     # Clear the entry fields
     id_entry.delete(0, tk.END)
     name_entry.delete(0, tk.END)
-    gender_entry.delete(0, tk.END)
+    sex_entry.delete(0, tk.END)
     year_entry.delete(0, tk.END)
     course_entry.delete(0, tk.END)
 
@@ -166,14 +169,14 @@ def refresh_data():
         
 
 def search():
-    search_term = searchin.get()
+    search_term = searchin.get()    
 
     # Connect to the database
     conn = sqlite3.connect('students.db')
     cursor = conn.cursor()
 
     # Execute the search query
-    cursor.execute("SELECT * FROM students WHERE id_number LIKE ? OR name LIKE ? OR gender LIKE ? OR year_level LIKE ? OR course LIKE ?",
+    cursor.execute("SELECT * FROM students WHERE id LIKE ? OR name LIKE ? OR sex LIKE ? OR year LIKE ? OR course LIKE ?",
                    (f"%{search_term}%", f"%{search_term}%", f"%{search_term}%", f"%{search_term}%", f"%{search_term}%"))
 
     results = cursor.fetchall()
@@ -303,39 +306,43 @@ data_frame.place(x=475,y=90,width=810,height=575)
 
 
 # entries and labels >> detail frame
-id_label = tk.Label(detail_frame, text="ID no.",font=("Arial", 13), bg= "lightgrey")
-id_label.grid(row=0,column=0,padx=2,pady=2)
-id_entry = tk.Entry(detail_frame,bd=7,font=("Arial",17),textvariable=id)
-id_entry.grid(row=0,column=1,padx=2,pady=2)
+id_label = tk.Label(detail_frame, text="ID",font=("Arial", 13), bg= "lightgrey")
+id_label.grid(row=0,column=0,padx=2,pady=10)
+id_entry = tk.Entry(detail_frame,bd=7,font=("Arial",13),textvariable=id)
+id_entry.grid(row=0,column=1,padx=2,pady=10)
 
 name_label = tk.Label(detail_frame, text="Name",font=("Arial", 13), bg= "lightgrey")
-name_label.grid(row=1,column=0,padx=2,pady=15)
-name_entry = tk.Entry(detail_frame,bd=7,font=("Arial",17),textvariable=name)
-name_entry.grid(row=1 ,column=1,padx=2,pady=15)
+name_label.grid(row=1,column=0,padx=2,pady=10)
+name_entry = tk.Entry(detail_frame,bd=7,font=("Arial",13),textvariable=name)
+name_entry.grid(row=1 ,column=1,padx=2,pady=10)
 
 sex_label = tk.Label(detail_frame, text="Sex",font=("Arial", 13), bg= "lightgrey")
-sex_label.grid(row=2,column=0,padx=2,pady=15)
-sex_entry = ttk.Combobox(detail_frame,font=("Arial",16),textvariable=sex)
+sex_label.grid(row=2,column=0,padx=2,pady=10)
+sex_entry = ttk.Combobox(detail_frame,font=("Arial",11),textvariable=sex,)
 sex_entry['values']=("Male","Female")
-sex_entry.grid(row=2,column=1,padx=2,pady=15)
+sex_entry.grid(row=2,column=1,padx=2,pady=10)
 
 
-year_label = tk.Label(detail_frame, text="Year Level",font=("Arial", 13), bg= "lightgrey")
-year_label.grid(row=4,column=0,padx=2,pady=15)
-year_entry = tk.Entry(detail_frame,bd=7,font=("Arial",17),textvariable=year)
-year_entry.grid(row=4,column=1,padx=2,pady=15)
+year_label = tk.Label(detail_frame, text="Year level",font=("Arial",13),bg="lightgrey")
+year_label.grid(row=5, column=0,padx=10,pady=10)
+year_entry = tk.Entry(detail_frame,bd=7,font=("Arial",13),textvariable=year)
+year_entry.grid(row=5, column=1,padx=10,pady=10)
 
 
 # Courses
-course_button = tk.Label(detail_frame, text="Courses",bg="lightgrey",bd=7,font=("Arial",7),width=10, command=open_courses_window)
-course_button.grid(row=3,column=0,padx=1,pady=10)
+course_button = tk.Button(detail_frame, text="Courses",bg="lightgrey",bd=7,font=("Arial",7),width=10, command=open_courses_window)
+course_button.grid(row=3,column=0,padx=10,pady=10)
+coursecode_entry= tk.Label(detail_frame, text="Course Code",bg="lightgrey",bd=7,font=("Arial",13))
+coursecode_entry.grid(row=4,column=0,padx=10,pady=10)
 
 course_entry = tk.Entry(detail_frame,bd=7,font=("Arial",13),textvariable=course)
-entry_course.grid(row=3, column=1, padx=1, pady=10)
+course_entry.grid(row=3, column=1, padx=10, pady=10)
+coursecode_entry = tk.Entry(detail_frame,bd=7,font=("Arial",13),textvariable=coursecode)
+coursecode_entry.grid(row=4, column=1, padx=10, pady=10)
 
 
 button_add_course = tk.Button(detail_frame, text="Add Course",bg="lightgrey",bd=7,font=("Arial",7),width=10, command=add_course)
-button_add_course.place(x=342,y=151)
+button_add_course.place(x=342,y=167)
 
 
 
@@ -343,20 +350,16 @@ button_add_course.place(x=342,y=151)
 
 # button frame
 btn_frame= tk.Frame(detail_frame, bg="lightgrey",bd=10,relief=tk.GROOVE)
-btn_frame.place(x=40,y=390,width=342,height=120)
+btn_frame.place(x=100,y=460,width=270,height=55)
 
 # buttons >> btn frame
-add_btn = tk.Button(btn_frame,bg="lightgrey",text="Add",bd=7,font=("Arial",13),width=15, command=add)
-add_btn.grid(row=0,column=0,padx=2,pady=2)
+add_btn = tk.Button(btn_frame, text="Add",bg="lightgrey",bd=7,font=("Arial",7),width=15, command=add)
+add_btn.grid(row=0,column=0,padx=7,pady=2)
 
-update_btn = tk.Button(btn_frame, bg="lightgrey", text="Update",bd=7,font=("Arial",13),width=15,command=update)
-update_btn.grid(row=0,column=1,padx=3,pady=2)
 
-delete_btn = tk.Button(btn_frame,bg="lightgrey",text="Delete",bd=7,font=("Arial",13),width=15,command=delete )
-delete_btn.grid(row=1,column=0,padx=2,pady=2)
+delete_btn = tk.Button(btn_frame, bg="lightgrey", text="Delete",bd=7,font=("Arial",7),width=15,command=delete )
+delete_btn.grid(row=0,column=1,padx=7,pady=2)
 
-select_btn = tk.Button(btn_frame, bg="lightgrey", text="Select",bd=7,font=("Arial",13),width=15, command=select)
-select_btn.grid(row=1,column=1,padx=3,pady=2)
 
 
 
@@ -368,15 +371,17 @@ search_frame.pack(side=tk.TOP, fill=tk.X)
 search_label=tk.Label(search_frame,text="Search",bg="lightgrey",font=("Arial",14))
 search_label.grid(row=0,column=0,padx=2,pady=2)
 
-search_in =ttk.Combobox(search_frame,font=("Arial", 14),state="readonly",textvariable=searchin)
-search_in['value']=("ID no.","Name", "Sex","Course", "Year Level")
-search_in.grid(row=0,column=1,padx=12,pady=2)
+search_entry =ttk.Entry(search_frame,font=("Arial", 14),textvariable=searchin)
+search_entry.grid(row=0,column=1,padx=12,pady=2)
 
-search_btn = tk.Button(search_frame,text="Search",font=("Arial",13),bd=9,width=12,bg="lightgrey",command = search)
-search_btn.grid(row=0,column=2,padx=35,pady=2)
+search_btn = tk.Button(search_frame,bg="lightgrey",text="Search",bd=7,font=("Arial",7),width=15,command=search)
+search_btn.place(x=385,y=2)
 
-reset_btn = tk.Button(search_frame,text="Reset",font=("Arial",13),bd=9,width=12,bg="lightgrey", command=reset)
-reset_btn.grid(row=0,column=3,padx=35,pady=2)
+update_button = tk.Button(search_frame, bg="lightgrey", text="Edit",bd=7,font=("Arial",7),width=15,command=update)
+update_button.place(x=510,y=2)
+
+reset_btn = tk.Button(search_frame, text="Reset",bg="lightgrey", bd=7,font=("Arial",7),width=15, command=reset_data)
+reset_btn.place(x=630,y=2)
 
 
 # frame for treeview
@@ -389,14 +394,14 @@ x_scroll = tk.Scrollbar(main_frame, orient = tk.HORIZONTAL)
 
 # Treeview
 # Create a tree view to display the student data
-stud_table = ttk.Treeview(window)
-stud_table["columns"] = ("ID Number", "Name", "Gender", "Year Level", "Course")
-stud_table.heading("ID Number", text="ID Number")
+stud_table = ttk.Treeview(main_frame)
+stud_table["columns"] = ("ID", "Name", "Sex", "Year Level", "Course")
+stud_table.heading("ID", text="ID")
 stud_table.heading("Name", text="Name")
-stud_table.heading("Gender", text="Gender")
+stud_table.heading("Sex", text="Sex")
 stud_table.heading("Year Level", text="Year Level")
 stud_table.heading("Course", text="Course")
-stud_table.pack()
+stud_table.pack(fill=tk.BOTH,expand=True)
 
 
 # Populate the tree view with data
