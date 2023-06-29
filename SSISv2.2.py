@@ -126,7 +126,7 @@ def select(event):
 def update():
     selected_id = id_entry.get()
     new_name = name_entry.get()
-    new_gender = sex_entry.get()
+    new_sex = sex_entry.get()
     new_year = year_entry.get()
     new_course = course_entry.get()
 
@@ -135,8 +135,8 @@ def update():
     cursor = conn.cursor()
 
 
-    cursor.execute('''UPDATE students SET name=?, gender=?, year_level=?, course=? WHERE id_number=?''',
-                   (new_name, new_gender, new_year, new_course, selected_id))
+    cursor.execute('''UPDATE students SET name=?, sex=?, year=?, course=? WHERE id_number=?''',
+                   (new_name, new_sex, new_year, new_course, selected_id))
 
     if cursor.rowcount > 0:
         conn.commit()
@@ -258,7 +258,7 @@ def search_course(search_term):
 
 
 def open_courses_window():
-    # Create a new window
+    # a new window
     courses_window = tk.Toplevel()
     courses_window.title("Courses")
     
@@ -398,11 +398,11 @@ style.configure("Treeview", bd= 7)
 # Treeview
 stud_table = ttk.Treeview(main_frame)
 stud_table["columns"] = ("ID", "Name", "Sex", "Year Level", "Course")
-stud_table.column("ID", anchor="w", width=100, minwidth=50)
-stud_table.column("Name", anchor="w", width=150, minwidth=100)
+stud_table.column("ID", anchor="center", width=100, minwidth=50)
+stud_table.column("Name", anchor="center", width=150, minwidth=100)
 stud_table.column("Sex", anchor="center", width=80, minwidth=50)
 stud_table.column("Year Level", anchor="center", width=100, minwidth=50)
-stud_table.column("Course", anchor="w", width=200, minwidth=100)
+stud_table.column("Course", anchor="center", width=200, minwidth=100)
 
 stud_table.heading("ID", text="ID")
 stud_table.heading("Name", text="Name")
