@@ -391,18 +391,26 @@ main_frame.pack(fill=tk.BOTH,expand=True)
 y_scroll = tk.Scrollbar(main_frame, orient = tk.VERTICAL)
 x_scroll = tk.Scrollbar(main_frame, orient = tk.HORIZONTAL)
 
+# style object
+style = ttk.Style()
+style.configure("Treeview", bd= 7)
 
 # Treeview
-# Create a tree view to display the student data
 stud_table = ttk.Treeview(main_frame)
 stud_table["columns"] = ("ID", "Name", "Sex", "Year Level", "Course")
+stud_table.column("ID", anchor="w", width=100, minwidth=50)
+stud_table.column("Name", anchor="w", width=150, minwidth=100)
+stud_table.column("Sex", anchor="center", width=80, minwidth=50)
+stud_table.column("Year Level", anchor="center", width=100, minwidth=50)
+stud_table.column("Course", anchor="w", width=200, minwidth=100)
+
 stud_table.heading("ID", text="ID")
 stud_table.heading("Name", text="Name")
 stud_table.heading("Sex", text="Sex")
 stud_table.heading("Year Level", text="Year Level")
 stud_table.heading("Course", text="Course")
-stud_table.pack(fill=tk.BOTH,expand=True)
-
+stud_table.column("#0", width=0, stretch=tk.NO)  # Remove space before "ID" column
+stud_table.pack(fill=tk.BOTH, expand=True)
 
 # Populate the tree view with data
 results = read()
