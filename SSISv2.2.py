@@ -192,25 +192,47 @@ def search():
         stud_table.insert("", tk.END, values=result)
 
     conn.close()
-    
-def add_course(courseID, courseName):
+
+def add_course():
+    courseID = coursecode_entry.get()
+    courseName = course_entry.get()
+
     conn = sqlite3.connect('courses.db')
     cursor = conn.cursor()
-    
+
     # Check if the course already exists in the database
-    cursor.execute("SELECT * FROM courses WHERE courseID = ?", (courseID))
+    cursor.execute("SELECT * FROM courses WHERE courseID = ?", (courseID,))
     existing_course = cursor.fetchone()
     if existing_course:
         messagebox.showinfo("Error", "Course already exists.")
+        conn.close()
         return
-    
+
     # Insert the new course into the database
-    cursor.execute("INSERT INTO courses (courseName, courseID) VALUES (?, ?)", (courseID, courseName))
+    cursor.execute("INSERT INTO courses (courseID, courseName) VALUES (?, ?)", (courseID, courseName))
     conn.commit()
     conn.close()
-    
+
     messagebox.showinfo("Success", "Course added successfully.")
 
+def show_courses():
+    conn = sqlite3.connect('courses.db')
+    cursor = conn.cursor()
+
+    # Fetch all the courses from the database
+    cursor.execute("SELECT * FROM courses")
+    courses = cursor.fetchall()
+
+    # Clear the treeview
+    for record in courses_table.get_children():
+        courses_table.delete(record)
+
+    # Insert the courses into the treeview
+    for course in courses:
+        courses_table.insert("", "end", values=course)
+
+    conn.close()
+    
 def update_course(courseID, new_courseName):
     conn = sqlite3.connect('courses.db')
     cursor = conn.cursor()
@@ -247,18 +269,32 @@ def delete_course(courseID):
     
     messagebox.showinfo("Success", "Course deleted successfully.")
 
-def search_course(search_term):
+def load_courses():
     conn = sqlite3.connect('courses.db')
     cursor = conn.cursor()
 
-    # Execute the search query
-    cursor.execute("SELECT * FROM courses WHERE courseID LIKE ? OR courseName LIKE ?",
-                   (f"%{search_term}%", f"%{search_term}%"))
+    # Fetch all courses from the database
+    conn = sqlite3.connect('courses.db')
+    cursor = conn.cursor()
 
-    results = cursor.fetchall()
+# Create the "courses" table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS courses (
+            courseID INTEGER PRIMARY KEY,
+            courseName TEXT
+        )
+    ''')
+    courses = cursor.fetchall()
+
+    # Clear existing items in the treeview
+    courses_table.delete(*courses_table.get_children())
+
+    # Insert courses into the treeview
+    for course in courses:
+        courses_table.insert('', 'end', values=course)
+
     conn.close()
-    return results
-
+    
 
 
 
@@ -273,6 +309,30 @@ detail_frame.place(x=20,y=55,width=450,height=575)
 
 data_frame = tk.Frame(app, bg="lightblue",relief=tk.GROOVE)
 data_frame.place(x=475,y=55,width=810,height=575)
+
+
+# courses treeview
+courses_table = ttk.Treeview(detail_frame)
+courses_table['columns'] = ('courseID', 'courseName')
+
+# Define column headings
+
+courses_table.heading('courseID', text='Course ID')
+courses_table.heading('courseName', text='Course Name')
+
+# Define column widths
+courses_table.column('courseID',anchor="center" ,width=100)
+courses_table.column('courseName', anchor= "center" ,width=200)
+courses_table.column("#0", width=0, stretch=tk.NO)
+# Load courses into the treeview
+load_courses()
+
+# Place the Treeview widget
+courses_table.place(x=80,y=250, height=150)
+
+# Button to refresh the table
+refresh_button = tk.Button(detail_frame, text="Refresh", command=load_courses)
+refresh_button.place()
 
 
 
@@ -296,9 +356,9 @@ sex_entry.place(x=110,y=110)
 
 
 year_label = tk.Label(detail_frame, text="Year level",font=("Times",10),bg="lightblue")
-year_label.place(x=20,y=400)
+year_label.place(x=20,y=420)
 year_entry = tk.Entry(detail_frame,bd=5,font=("Times",10),textvariable=year)
-year_entry.place(x=110,y=400)
+year_entry.place(x=110,y=420)
 
 
 # Courses
@@ -318,14 +378,15 @@ button_add_course.place(x=270,y=150)
 button_edit_course = tk.Button(detail_frame, text="Edit Course",bg="lightgrey",bd=5,font=("Times",7),width=10, command=add_course)
 button_edit_course.place(x=342,y=150)
 button_remove_course = tk.Button(detail_frame, text="Remove Course",bg="lightgrey",bd=5,font=("Times",7),width=10, command=add_course)
-button_remove_course.place(x=310,y=200)
-
+button_remove_course.place(x=270,y=200)
+refresh_button = tk.Button(detail_frame, text="Refresh", bg="lightgrey",bd=5,font=("Times",7),width=10, command=load_courses)
+refresh_button.place(x=342,y=200)
 
 
 
 # button frame
 btn_frame= tk.Frame(detail_frame, bg="lightgrey",bd=10,relief=tk.GROOVE)
-btn_frame.place(x=120,y=460,width=230,height=55)
+btn_frame.place(x=120,y=480,width=230,height=55)
 
 # buttons >> btn frame
 add_btn = tk.Button(btn_frame, text="Add",bg="lightgrey",bd=5,font=("Times",7),width=15, command=add)
