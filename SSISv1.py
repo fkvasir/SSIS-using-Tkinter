@@ -7,18 +7,17 @@ from tkinter import ttk
 
 root = tk.Tk()
 root.title("SSIS v1.0")
-root.geometry("1360x680")
+root.geometry("900x620")
 
-title_label = tk.Label(root, text="Simple Student Information System v1.0", font=("Arial", 30,"bold"),border=12,relief=tk.GROOVE,bg="lightgrey")
+title_label = tk.Label(root,height=2,relief=tk.GROOVE,bg="lightblue")
 title_label.pack(side=tk.TOP,fill=tk.X)
 
-
 # frames
-detail_frame = tk.LabelFrame(root, text="Information",font=("Arial",13),bd=12,relief=tk.GROOVE,bg="lightgrey")
-detail_frame.place(x=20,y=90,width=450,height=575)
+detail_frame = tk.LabelFrame(root,font=("Times",13),bd=5,relief=tk.GROOVE,bg="lightblue")
+detail_frame.place(y=35,width=430,height=586)
 
-data_frame = tk.Frame(root, bg="lightgrey",bd=12,relief=tk.GROOVE)
-data_frame.place(x=475,y=90,width=810,height=575)
+data_frame = tk.Frame(root,bg="lightblue",bd=5,relief=tk.GROOVE)
+data_frame.place(x=429,y=35,width=471,height=586)
 
 # __init__ variables
 id= tk.StringVar()
@@ -52,7 +51,7 @@ def save_selection():
             writer = csv.writer(
                 file
             )
-            writer.writerow([student_name] + courses + [student_sex] + [student_id]+ [student_year])
+            writer.writerow([student_id] + [student_name]  + [student_sex] + courses + [student_year])
         
         messagebox.showinfo("Selection Saved", "Selection has been saved successfully.")
 
@@ -203,21 +202,23 @@ def clear_entries():
 
 
 # labels and entries >>>detail frame
-label_id = tk.Label(detail_frame, text="ID no.",font=("Arial", 13), bg= "lightgrey")
-label_id.grid(row=0,column=0,padx=2,pady=2)
-entry_id = tk.Entry(detail_frame,bd=7,font=("Arial",13),textvariable=id)
+label_id = tk.Label(detail_frame, text="ID no.",font=("Times", 13), bg= "lightblue")
+label_id.grid(row=0,column=0,padx=2,pady=20)
+entry_id = tk.Entry(detail_frame,bd=7,font=("Times",13),textvariable=id)
 entry_id.grid(row=0,column=1,padx=2,pady=2)
 
 
-label_name = tk.Label(detail_frame, text="Name",font=("Arial", 13), bg= "lightgrey")
+label_name = tk.Label(detail_frame, text="Name",font=("Times", 13), bg= "lightblue")
 label_name.grid(row=1,column=0,padx=2,pady=10)
-entry_name = tk.Entry(detail_frame,bd=7,font=("Arial",13),textvariable=name)
+entry_name = tk.Entry(detail_frame,bd=7,font=("Times",13),textvariable=name)
 entry_name.grid(row=1 ,column=1,padx=2,pady=10)
 
+menu_button = tk
 
-sex_label = tk.Label(detail_frame, text="Sex",font=("Arial", 13), bg= "lightgrey")
+
+sex_label = tk.Label(detail_frame, text="Sex",font=("Times", 13), bg= "lightblue")
 sex_label.grid(row=2,column=0,padx=2,pady=10)
-entry_sex = ttk.Combobox(detail_frame,font=("Arial",11),textvariable=sex,)
+entry_sex = ttk.Combobox(detail_frame,font=("Times",11),textvariable=sex,)
 entry_sex['values']=("Male","Female")
 entry_sex.grid(row=2,column=1,padx=2,pady=10)
 
@@ -225,60 +226,55 @@ entry_sex.grid(row=2,column=1,padx=2,pady=10)
 listbox_courses = tk.Listbox(detail_frame, width=50,bd=7)
 listbox_courses.grid(row=4,column=1,padx=2,pady=10)
 
-label_course = tk.Label(detail_frame, text="Course", font=("Arial",13),bg="lightgrey")
+label_course = tk.Label(detail_frame, text="Course", font=("Times",13),bg="lightblue")
 label_course.grid(row=3, column=0,padx=1,pady=10)
-entry_course = tk.Entry(detail_frame,bd=7,font=("Arial",13),textvariable=course)
+entry_course = tk.Entry(detail_frame,bd=7,font=("Times",13),textvariable=course)
 entry_course.grid(row=3, column=1, padx=1, pady=10)
 
 
-label_year = tk.Label(detail_frame, text="Year level:",font=("Arial",13),bg="lightgrey")
-label_year.grid(row=5, column=0,pady=10)
-entry_year = tk.Entry(detail_frame,bd=7,font=("Arial",13),textvariable=year)
-entry_year.grid(row=5, column=1,pady=10)
+label_year = tk.Label(detail_frame, text="Year level:",font=("Times",13),bg="lightblue")
+label_year.grid(row=6, column=0,pady=10)
+entry_year = tk.Entry(detail_frame,bd=7,font=("Times",13),textvariable=year)
+entry_year.grid(row=6, column=1,pady=10)
 
 # >> add course to listbox
-button_add_course = tk.Button(detail_frame, text="Add Course",bg="lightgrey",bd=7,font=("Arial",7),width=10, command=add_course)
-button_add_course.place(x=342,y=151)
+button_add_course = tk.Button(detail_frame, text="Add Course",bg="lightblue",bd=7,font=("Times",7),width=10, command=add_course)
+button_add_course.place(x=342,y=178)
 
 # buttons >> button frame
-btn_frame= tk.Frame(detail_frame, bg="lightgrey",bd=10,relief=tk.GROOVE)
-btn_frame.place(x=100,y=460,width=270,height=55)
+btn_frame= tk.Frame(detail_frame, bg="lightblue",bd=10,relief=tk.GROOVE)
+btn_frame.place(x=120,y=490,width=240,height=55)
 
 
-button_save_selection = tk.Button(btn_frame, text="Save",bg="lightgrey",bd=7,font=("Arial",7),width=15, command=save_selection)
+button_save_selection = tk.Button(btn_frame, text="Save",bg="lightblue",bd=7,font=("Times",7),width=15, command=save_selection)
 button_save_selection.grid(row=0,column=0,padx=7,pady=2)
 
 
-clear_btn = tk.Button(btn_frame, bg="lightgrey", text="Clear",bd=7,font=("Arial",7),width=15, command=clear_entries)
+clear_btn = tk.Button(btn_frame, bg="lightblue", text="Clear",bd=7,font=("Times",7),width=15, command=clear_entries)
 clear_btn.grid(row=0,column=1,padx=7,pady=2)
 
 
-# top right frame >> data frame
-search_frame = tk.Frame(data_frame,bg="lightgrey",bd=10,relief=tk.GROOVE)
-search_frame.pack(side=tk.TOP, fill=tk.X)
-
-
 # search and show buttons
-search_label=tk.Label(search_frame,text="Search",bg="lightgrey",font=("Arial",14))
+search_label=tk.Label(title_label,text="Search",bg="lightblue",font=("Times",14))
 search_label.grid(row=0,column=0,padx=2,pady=2)
 
-search_entry =ttk.Entry(search_frame,font=("Arial", 14),textvariable=search)
+search_entry =ttk.Entry(title_label,font=("Times", 15),textvariable=search)
 search_entry.grid(row=0,column=1,padx=12,pady=2)
 
 
 
 # buttons >> search_frame
-button_remove_data = tk.Button(search_frame, text="Remove Data",bg="lightgrey", bd=7,font=("Arial",7),width=15, command=remove_data)
-button_remove_data.place(x=630,y=2)
+button_remove_data = tk.Button(title_label, text="Remove Data",bg="lightblue", bd=7,font=("Arial",7),width=15, command=remove_data)
+button_remove_data.place(x=655,y=2)
 
-search_btn = tk.Button(search_frame,bg="lightgrey",text="Search",bd=7,font=("Arial",7),width=15,command=search_data)
-search_btn.place(x=385,y=2)
+search_btn = tk.Button(title_label,bg="lightblue",text="Search",bd=7,font=("Arial",7),width=15,command=search_data)
+search_btn.place(x=540,y=2)
 
-button_edit_data = tk.Button(search_frame, bg="lightgrey", text="Edit",bd=7,font=("Arial",7),width=15,command=edit_data)
-button_edit_data.place(x=510,y=2)
+button_edit_data = tk.Button(title_label, bg="lightblue", text="Edit",bd=7,font=("Arial",7),width=15,command=edit_data)
+button_edit_data.place(x=770,y=2)
 # listbox data
-listbox_data = tk.Listbox(data_frame, width=50,bd=7)
-listbox_data.place(x=60,y=70,width=670,height=450)
+listbox_data = tk.Listbox(data_frame, width=30,bd=7)
+listbox_data.place(x=60,y=70,width=335,height=450)
 
 
 load_data()
