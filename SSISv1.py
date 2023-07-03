@@ -9,7 +9,7 @@ root = tk.Tk()
 root.title("SSIS v1.0")
 root.geometry("900x620")
 
-title_label = tk.Label(root,height=2,relief=tk.GROOVE,bg="lightblue")
+title_label = tk.Label(root,height=3,relief=tk.GROOVE,bg="lightblue")
 title_label.pack(side=tk.TOP,fill=tk.X)
 
 # frames
