@@ -20,9 +20,9 @@ id= tk.StringVar()
 name=tk.StringVar()
 sex=tk.StringVar()
 year=tk.StringVar()
-course =tk.StringVar()
+courseName =tk.StringVar()
+courseID =tk.StringVar()
 searchin = tk.StringVar()
-coursecode=tk.StringVar()
 
 # placeholder values
 def setph(word,num):
@@ -35,11 +35,12 @@ def setph(word,num):
     if num == 4:
         year.set(word)
     if num == 5:
-        course.set(word)
+        courseName.set(word)
     if num == 6:
-        searchin.set(word)
+        courseName.set(word)
     if num == 7:
-        coursecode.set(word)
+        searchin.set(word)
+
         
 def read():
     conn = sqlite3.connect('students.db')
@@ -50,24 +51,24 @@ def read():
     conn.close()
     return results
 
-def add(name, id_number, gender, year_level, course):
+def add(name, id_number, gender, year_level, courseID):
     id_number = id.get()
     name = name.get()
     gender = sex.get()
     year_level = year.get()
-    course = course.get()
+    courseID = courseID.get()
 
     # Connect to database
     conn = sqlite3.connect('students.db')
     cursor = conn.cursor()
     
-    if (id =="" or id==" ") or (name =="" or name ==" ") or (sex =="" or sex ==" ") or (course =="" or course ==" ") or (year =="" or year ==" "):  # if entries are empty >>
+    if (id =="" or id==" ") or (name =="" or name ==" ") or (sex =="" or sex ==" ") or (courseID =="" or courseID ==" ") or (year =="" or year ==" "):  # if entries are empty >>
         messagebox.showinfo("Error", "Please fill up the blank entry") # >> will show an error
         return
     else:
         try:
-            cursor.execute('''INSERT INTO students (name, id_number, gender, year_level, course)
-                      VALUES (?, ?, ?, ?, ?)''', (name, id_number, gender, year_level, course))
+            cursor.execute('''INSERT INTO students (name, id_number, gender, year_level, courseID)
+                      VALUES (?, ?, ?, ?, ?)''', (name, id_number, gender, year_level, courseID))
             conn.commit()
             conn.close()
             messagebox.showinfo("Success","Data added successfully")
@@ -118,8 +119,8 @@ def select(event):
             sex_entry.insert(tk.END, selected_data[2])
             year_entry.delete(0, tk.END)
             year_entry.insert(tk.END, selected_data[3])
-            course_entry.delete(0, tk.END)
-            course_entry.insert(tk.END, selected_data[4])
+            coursecode_entry.delete(0, tk.END)
+            coursecode_entry.insert(tk.END, selected_data[4])
         
     except:
         messagebox.showinfo("Error","Please select a data row")
@@ -130,15 +131,15 @@ def update():
     new_name = name_entry.get()
     new_sex = sex_entry.get()
     new_year = year_entry.get()
-    new_course = course_entry.get()
+    new_courseID = coursecode_entry.get()
 
 
     conn = sqlite3.connect('students.db')
     cursor = conn.cursor()
 
 
-    cursor.execute('''UPDATE students SET name=?, sex=?, year=?, course=? WHERE id_number=?''',
-                   (new_name, new_sex, new_year, new_course, selected_id))
+    cursor.execute('''UPDATE students SET studentName=?, sex=?, year=?, courseID=? WHERE studentID=?''',
+                   (new_name, new_sex, new_year, new_courseID, selected_id))
 
     if cursor.rowcount > 0:
         conn.commit()
@@ -152,7 +153,7 @@ def update():
     name_entry.delete(0, tk.END)
     sex_entry.delete(0, tk.END)
     year_entry.delete(0, tk.END)
-    course_entry.delete(0, tk.END)
+    coursecode_entry.delete(0, tk.END)
 
     refresh_data()
 
@@ -178,7 +179,7 @@ def search():
     cursor = conn.cursor()
 
     # Execute the search query
-    cursor.execute("SELECT * FROM students WHERE id LIKE ? OR name LIKE ? OR sex LIKE ? OR year LIKE ? OR course LIKE ?",
+    cursor.execute("SELECT * FROM students WHERE studentID LIKE ? OR studentName LIKE ? OR sex LIKE ? OR year LIKE ? OR courseID LIKE ?",
                    (f"%{search_term}%", f"%{search_term}%", f"%{search_term}%", f"%{search_term}%", f"%{search_term}%"))
 
     results = cursor.fetchall()
@@ -192,58 +193,55 @@ def search():
 
     conn.close()
     
-def add_course(course_code, course_name):
-    course_code = coursecode_entry.get()
-    course_name = course_entry.get()
-    
+def add_course(courseID, courseName):
     conn = sqlite3.connect('courses.db')
     cursor = conn.cursor()
     
     # Check if the course already exists in the database
-    cursor.execute("SELECT * FROM courses WHERE course_code = ?", (course_code,))
+    cursor.execute("SELECT * FROM courses WHERE courseID = ?", (courseID))
     existing_course = cursor.fetchone()
     if existing_course:
         messagebox.showinfo("Error", "Course already exists.")
         return
     
     # Insert the new course into the database
-    cursor.execute("INSERT INTO courses (course_code, course_name) VALUES (?, ?)", (course_code, course_name))
+    cursor.execute("INSERT INTO courses (courseName, courseID) VALUES (?, ?)", (courseID, courseName))
     conn.commit()
     conn.close()
     
     messagebox.showinfo("Success", "Course added successfully.")
 
-def update_course(course_code, new_course_name):
+def update_course(courseID, new_courseName):
     conn = sqlite3.connect('courses.db')
     cursor = conn.cursor()
     
     # Check if the course exists in the database
-    cursor.execute("SELECT * FROM courses WHERE course_code = ?", (course_code,))
+    cursor.execute("SELECT * FROM courses WHERE courseID = ?", (courseID,))
     existing_course = cursor.fetchone()
     if not existing_course:
         messagebox.showinfo("Error", "Course does not exist.")
         return
     
     # Update the course name in the database
-    cursor.execute("UPDATE courses SET course_name = ? WHERE course_code = ?", (new_course_name, course_code))
+    cursor.execute("UPDATE courses SET courseName = ? WHERE courseID = ?", (new_courseName, courseID))
     conn.commit()
     conn.close()
     
     messagebox.showinfo("Success", "Course updated successfully.")
 
-def delete_course(course_code):
+def delete_course(courseID):
     conn = sqlite3.connect('courses.db')
     cursor = conn.cursor()
     
     # Check if the course exists in the database
-    cursor.execute("SELECT * FROM courses WHERE course_code = ?", (course_code,))
+    cursor.execute("SELECT * FROM courses WHERE courseID = ?", (courseID))
     existing_course = cursor.fetchone()
     if not existing_course:
         messagebox.showinfo("Error", "Course does not exist.")
         return
     
     # Delete the course from the database
-    cursor.execute("DELETE FROM courses WHERE course_code = ?", (course_code,))
+    cursor.execute("DELETE FROM courses WHERE courseID = ?", (courseID))
     conn.commit()
     conn.close()
     
@@ -254,7 +252,7 @@ def search_course(search_term):
     cursor = conn.cursor()
 
     # Execute the search query
-    cursor.execute("SELECT * FROM courses WHERE course_code LIKE ? OR course_name LIKE ?",
+    cursor.execute("SELECT * FROM courses WHERE courseID LIKE ? OR courseName LIKE ?",
                    (f"%{search_term}%", f"%{search_term}%"))
 
     results = cursor.fetchall()
@@ -292,7 +290,7 @@ name_entry.place(x=110, y=60)
 
 sex_label = tk.Label(detail_frame, text="Sex",font=("Times", 10), bg= "lightblue")
 sex_label.place(x=20,y=110)
-sex_entry = ttk.Combobox(detail_frame,font=("Times",8),textvariable=sex,)
+sex_entry = ttk.Combobox(detail_frame,font=("Times",8),textvariable=sex)
 sex_entry['values']=("Male","Female")
 sex_entry.place(x=110,y=110)
 
@@ -309,15 +307,18 @@ course_label.place(x=20,y=150)
 coursecode_entry= tk.Label(detail_frame, text="Course Code",bg="lightblue",bd=5,font=("Times",10))
 coursecode_entry.place(x=20,y=200)
 
-course_entry = tk.Entry(detail_frame,bd=5,font=("Times",10),textvariable=course)
+course_entry = tk.Entry(detail_frame,bd=5,font=("Times",10),textvariable=courseName)
 course_entry.place(x=110,y=150)
-coursecode_entry = tk.Entry(detail_frame,bd=5,font=("Times",10),textvariable=coursecode)
+coursecode_entry = tk.Entry(detail_frame,bd=5,font=("Times",10),textvariable=courseID)
 coursecode_entry.place(x=110, y=200)
 
 
 button_add_course = tk.Button(detail_frame, text="Add Course",bg="lightgrey",bd=5,font=("Times",7),width=10, command=add_course)
-button_add_course.place(x=342,y=167)
-
+button_add_course.place(x=270,y=150)
+button_edit_course = tk.Button(detail_frame, text="Edit Course",bg="lightgrey",bd=5,font=("Times",7),width=10, command=add_course)
+button_edit_course.place(x=342,y=150)
+button_remove_course = tk.Button(detail_frame, text="Remove Course",bg="lightgrey",bd=5,font=("Times",7),width=10, command=add_course)
+button_remove_course.place(x=310,y=200)
 
 
 
