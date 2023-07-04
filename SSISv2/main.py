@@ -454,7 +454,7 @@ courses_table.place(x=80,y=250, height=150)
 
 display_courses()
 
-courses_table.bind("<<TreeviewSelect>>", select)
+courses_table.bind("<<TreeviewSelect>>", select_courses)
 
 
 
