@@ -155,6 +155,7 @@ def delete_course():
         messagebox.showinfo("Success", "Data deleted successfully.")
     else:
         messagebox.showinfo("Error", "No matching student found.")
+    refresh_data()
 
 
 def select(event):
@@ -234,7 +235,7 @@ def edit_course():
         conn.close()
         messagebox.showinfo("Success", "Data updated successfully.")
     else:
-        messagebox.showinfo("Error", "No matching student found.")
+        messagebox.showinfo("Error", "No matching course found.")
 
     # Clear the entry fields
     course_entry.delete(0,tk.END)
@@ -263,13 +264,11 @@ def refresh_data_courses():
     results_courses = read_courses()
 
     # Insert the data into the courses_table
-    for result in results_courses:
+    for results_courses in results_courses:
         courses_table.insert("", tk.END, values=results_courses)
 
 
     
-        
-
 def search():
     search_term = searchin.get()    
 
@@ -326,6 +325,7 @@ def display_courses():
     # Insert the updated data into the Treeview
     for course in courses_data:
         courses_table.insert("", tk.END, values=course)
+    refresh_data_courses()
 
 
 
