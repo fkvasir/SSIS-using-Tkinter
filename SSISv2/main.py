@@ -290,7 +290,29 @@ def search():
         stud_table.insert("", tk.END, values=result)
 
     conn.close()
-    
+
+def search_course():
+    search_term = course_entry.get()    
+
+    # Connect to the database
+    conn = sqlite3.connect('courses.db')
+    cursor = conn.cursor()
+
+    # Execute the search query
+    query = "SELECT * FROM courses WHERE courseID LIKE ? OR courseName LIKE ? "
+
+    cursor.execute(query, (f"%{search_term}%", f"%{search_term}%"))
+
+    results_courses = cursor.fetchall()
+
+    # Clear the tree view
+    stud_table.delete(*stud_table.get_children())
+
+    # Insert the search results into the tree view
+    for results_courses in results_courses:
+        stud_table.insert("", tk.END, values=results_courses)
+
+    conn.close()
 
 def read_courses():
     # Connect to the database (assuming it's named 'courses.db')
@@ -388,7 +410,8 @@ button_edit_course = tk.Button(detail_frame, text="Edit Course",bg="lightgrey",b
 button_edit_course.place(x=342,y=150)
 button_delete_course = tk.Button(detail_frame, text="Delete Course",bg="lightgrey",bd=5,font=("Times",7),width=10, command=delete_course)
 button_delete_course.place(x=270,y=200)
-
+button_search_course = tk.Button(detail_frame, text="Search Course",bg="lightgrey",bd=5,font=("Times",7),width=10, command=search_course)
+button_search_course.place(x=342,y=200)
 
 
 
