@@ -61,61 +61,65 @@ def read_courses():
     conn.close()
     return results_courses
 
-def add(studentID, studentName, sex1, year1, courseid):
-    studentID = id.get()
-    studentName = name.get()
-    sex1 = sex.get()
-    year1 = year.get()
-    courseid = courseID.get()
+def add():
+    # Retrieve the input data from the Tkinter interface
+    student_id = id.get()
+    student_name = name.get()
+    student_sex = sex.get()
+    student_year = year.get()
+    course_id = courseID.get()
 
-    # Connect to database
-    conn = sqlite3.connect('students.db')
-    cursor = conn.cursor()
-    
-    if (studentID =="" or studentID==" ") or (studentName =="" or studentName ==" ") or (sex1 =="" or sex1 ==" ") or (year1 =="" or year1 ==" ") or (courseid =="" or courseid ==" ") :  # if entries are empty >>
-        messagebox.showinfo("Error", "Please fill up the blank entry")
-        return
-    else:
-        try:
-            cursor.execute('''INSERT INTO students (studentID, studentName, sex, year, courseID)
-                      VALUES (?, ?, ?, ?, ?)''', (studentID, studentName, sex1, year1, courseid))
-            conn.commit()
-            conn.close()
-            messagebox.showinfo("Success","Data added successfully")
-        except sqlite3.IntegrityError:
-            messagebox.showinfo("Error","ID already exist")
-            return
-
-
-
-def add_course(courseid, coursename):
-    courseid = courseID.get()
-    coursename = courseName.get()
-
-    conn = sqlite3.connect('courses.db')
+    # Connect to the SQLite database
+    conn = sqlite3.connect("students.db")
     cursor = conn.cursor()
 
-    if (courseid =="" or courseid==" ") or (coursename =="" or coursename ==" "):  # if entries are empty >>
-        messagebox.showinfo("Error", "Please fill up the blank entry")
-        return
-    else:
-        try:
-            cursor.execute('''INSERT INTO courses (courseID, courseName)
-                      VALUES (?, ?)''', (str(courseid),str(coursename)))
-            conn.commit()
-            conn.close()
-            messagebox.showinfo("Success","Data added successfully")
-        except sqlite3.IntegrityError:
-            messagebox.showinfo("Error","Course ID already exist")
-            return
+    # Define the SQL query to insert the data into the database table
+    query = "INSERT INTO students (studentID, studentName, sex, year, courseID) VALUES (?, ?, ?, ?, ?)"
 
-    cursor.execute("SELECT * FROM courses WHERE courseID = ?", (courseID,))
-    existing_course = cursor.fetchone()
-    if existing_course:
-        messagebox.showinfo("Error", "Course already exists.")
+    # Execute the query with the input data
+    cursor.execute(query, (student_id, student_name, student_sex, student_year, course_id))
+
+    # Commit the changes and close the database connection
+    conn.commit()
+    conn.close()
+
+    # Show a message box indicating successful data insertion
+    messagebox.showinfo("Success", "Data inserted successfully!")
+
+
+def add_course():
+    course_id = courseID.get()
+    course_name = courseName.get()
+
+    if not course_id or not course_name:
+        # Show an error message if either course ID or course name is empty
+        messagebox.showerror("Error", "Please enter both Course ID and Course Name.")
+        return
+
+    try:
+        # Connect to the database
+        conn = sqlite3.connect("courses.db")
+        cursor = conn.cursor()
+
+        # Insert the course into the database
+        cursor.execute("INSERT INTO courses (courseID, courseName) VALUES (?, ?)", (course_id, course_name))
+        conn.commit()
+
+        # Close the connection
         conn.close()
-        return
 
+        # Clear the input fields
+        courseID.set("")
+        courseName.set("")
+
+        # Show a success message
+        messagebox.showinfo("Success", "Course added successfully.")
+    except sqlite3.IntegrityError:
+        # Show an error message if the course ID already exists
+        messagebox.showerror("Error", "Course ID already exists.")
+    except sqlite3.Error as e:
+        # Show an error message for any other database-related error
+        messagebox.showerror("Error", f"An error occurred: {e}")
 
 def reset_data():
     
@@ -260,14 +264,16 @@ def refresh_data():
     
 
 def refresh_data_courses():
+    # Clear the existing data in the courses_table
+    courses_table.delete(*courses_table.get_children())
 
-    for item in courses_table.get_children():
-        courses_table.delete(item)
-    
-    results_courses = read()
+    # Retrieve the data from the courses database
+    results_courses = read_courses()
 
+    # Insert the data into the courses_table
     for result in results_courses:
-        courses_table.insert("", tk.END, values=results_courses)
+        courses_table.insert("", tk.END, values=result)
+
 
     
         
@@ -341,8 +347,8 @@ year_entry.place(x=110,y=420)
 # Courses
 course_label = tk.Label(detail_frame, text="Course Name",bg="lightblue",bd=5,font=("Times",10),width=10)
 course_label.place(x=20,y=150)
-coursecode_entry= tk.Label(detail_frame, text="Course Code",bg="lightblue",bd=5,font=("Times",10))
-coursecode_entry.place(x=20,y=200)
+coursecode_label= tk.Label(detail_frame, text="Course Code",bg="lightblue",bd=5,font=("Times",10))
+coursecode_label.place(x=20,y=200)
 
 course_entry = tk.Entry(detail_frame,bd=5,font=("Times",10),textvariable=courseName)
 course_entry.place(x=110,y=150)
