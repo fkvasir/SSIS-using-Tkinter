@@ -37,9 +37,10 @@ def setph(word,num):
     if num == 5:
         courseName.set(word)
     if num == 6:
-        courseName.set(word)
+        courseID.set(word)
     if num == 7:
         searchin.set(word)
+
 
         
 def read():
@@ -51,30 +52,69 @@ def read():
     conn.close()
     return results
 
-def add(name, id_number, gender, year_level, courseID):
-    id_number = id.get()
-    name = name.get()
-    gender = sex.get()
-    year_level = year.get()
-    courseID = courseID.get()
+def read_courses():
+    conn = sqlite3.connect('courses.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM courses")
+    results_courses = cursor.fetchall()
+    conn.commit()
+    conn.close()
+    return results_courses
+
+def add(studentID, studentName, sex1, year1, courseid):
+    studentID = id.get()
+    studentName = name.get()
+    sex1 = sex.get()
+    year1 = year.get()
+    courseid = courseID.get()
 
     # Connect to database
     conn = sqlite3.connect('students.db')
     cursor = conn.cursor()
     
-    if (id =="" or id==" ") or (name =="" or name ==" ") or (sex =="" or sex ==" ") or (courseID =="" or courseID ==" ") or (year =="" or year ==" "):  # if entries are empty >>
-        messagebox.showinfo("Error", "Please fill up the blank entry") # >> will show an error
+    if (studentID =="" or studentID==" ") or (studentName =="" or studentName ==" ") or (sex1 =="" or sex1 ==" ") or (year1 =="" or year1 ==" ") or (courseid =="" or courseid ==" ") :  # if entries are empty >>
+        messagebox.showinfo("Error", "Please fill up the blank entry")
         return
     else:
         try:
-            cursor.execute('''INSERT INTO students (name, id_number, gender, year_level, courseID)
-                      VALUES (?, ?, ?, ?, ?)''', (name, id_number, gender, year_level, courseID))
+            cursor.execute('''INSERT INTO students (studentID, studentName, sex, year, courseID)
+                      VALUES (?, ?, ?, ?, ?)''', (studentID, studentName, sex1, year1, courseid))
             conn.commit()
             conn.close()
             messagebox.showinfo("Success","Data added successfully")
         except sqlite3.IntegrityError:
             messagebox.showinfo("Error","ID already exist")
             return
+
+
+
+def add_course(courseid, coursename):
+    courseid = courseID.get()
+    coursename = courseName.get()
+
+    conn = sqlite3.connect('courses.db')
+    cursor = conn.cursor()
+
+    if (courseid =="" or courseid==" ") or (coursename =="" or coursename ==" "):  # if entries are empty >>
+        messagebox.showinfo("Error", "Please fill up the blank entry")
+        return
+    else:
+        try:
+            cursor.execute('''INSERT INTO courses (courseID, courseName)
+                      VALUES (?, ?)''', (str(courseid),str(coursename)))
+            conn.commit()
+            conn.close()
+            messagebox.showinfo("Success","Data added successfully")
+        except sqlite3.IntegrityError:
+            messagebox.showinfo("Error","Course ID already exist")
+            return
+
+    cursor.execute("SELECT * FROM courses WHERE courseID = ?", (courseID,))
+    existing_course = cursor.fetchone()
+    if existing_course:
+        messagebox.showinfo("Error", "Course already exists.")
+        conn.close()
+        return
 
 
 def reset_data():
@@ -96,7 +136,7 @@ def delete():
     conn = sqlite3.connect('students.db')
     cursor = conn.cursor()
 
-    cursor.execute('''DELETE FROM students WHERE id_number = ?''', (selected_id,))
+    cursor.execute('''DELETE FROM students WHERE studentID = ?''', (selected_id,))
     
     if cursor.rowcount > 0:
         conn.commit()
@@ -105,7 +145,22 @@ def delete():
     else:
         messagebox.showinfo("Error", "No matching student found.")
 
-        
+
+def delete_course():
+    selected_courseID = coursecode_entry.get()
+
+    conn = sqlite3.connect('courses.db')
+    cursor = conn.cursor()
+    
+    cursor.execute('''DELETE FROM courses WHERE courseID = ?''', (selected_courseID,))
+    if cursor.rowcount > 0:
+        conn.commit()
+        conn.close()
+        messagebox.showinfo("Success", "Data deleted successfully.")
+    else:
+        messagebox.showinfo("Error", "No matching student found.")
+
+
 def select(event):
     try:
         selected_item = stud_table.focus()
@@ -125,14 +180,25 @@ def select(event):
     except:
         messagebox.showinfo("Error","Please select a data row")
         
+def select_courses(event):
+    try:
+        selected_item = courses_table.focus()
+        selected_data = courses_table.item(selected_item)['values']
+        if selected_data:
+            coursecode_entry.delete(0, tk.END)
+            coursecode_entry.insert(tk.END, selected_data[0])
+            course_entry.delete(0, tk.END)
+            course_entry.insert(tk.END, selected_data[1])
         
-def update():
+    except:
+        messagebox.showinfo("Error","Please select a data row")        
+        
+def edit():
     selected_id = id_entry.get()
     new_name = name_entry.get()
     new_sex = sex_entry.get()
     new_year = year_entry.get()
     new_courseID = coursecode_entry.get()
-
 
     conn = sqlite3.connect('students.db')
     cursor = conn.cursor()
@@ -157,9 +223,33 @@ def update():
 
     refresh_data()
 
+def edit_course():
+    selected_courseID = coursecode_entry.get()
+    new_coursename = course_entry.get()
+
+    conn = sqlite3.connect('courses.db')
+    cursor = conn.cursor()
+    
+
+    cursor.execute('''UPDATE courses SET courseName=? WHERE courseID=?''',
+                   (new_coursename,selected_courseID))
+    if cursor.rowcount > 0:
+        conn.commit()
+        conn.close()
+        messagebox.showinfo("Success", "Data updated successfully.")
+    else:
+        messagebox.showinfo("Error", "No matching student found.")
+
+    # Clear the entry fields
+    course_entry.delete(0,tk.END)
+    coursecode_entry.delete(0, tk.END)
+
+    refresh_data_courses()
+
+
 # Function to refresh the data in the tree view
 def refresh_data():
-    # Clear the tree view
+
     for item in stud_table.get_children():
         stud_table.delete(item)
     
@@ -168,6 +258,17 @@ def refresh_data():
     for result in results:
         stud_table.insert("", tk.END, values=result)
     
+
+def refresh_data_courses():
+
+    for item in courses_table.get_children():
+        courses_table.delete(item)
+    
+    results_courses = read()
+
+    for result in results_courses:
+        courses_table.insert("", tk.END, values=results_courses)
+
     
         
 
@@ -192,109 +293,9 @@ def search():
         stud_table.insert("", tk.END, values=result)
 
     conn.close()
-
-def add_course():
-    courseID = coursecode_entry.get()
-    courseName = course_entry.get()
-
-    conn = sqlite3.connect('courses.db')
-    cursor = conn.cursor()
-
-    # Check if the course already exists in the database
-    cursor.execute("SELECT * FROM courses WHERE courseID = ?", (courseID,))
-    existing_course = cursor.fetchone()
-    if existing_course:
-        messagebox.showinfo("Error", "Course already exists.")
-        conn.close()
-        return
-
-    # Insert the new course into the database
-    cursor.execute("INSERT INTO courses (courseID, courseName) VALUES (?, ?)", (courseID, courseName))
-    conn.commit()
-    conn.close()
-
-    messagebox.showinfo("Success", "Course added successfully.")
-
-def show_courses():
-    conn = sqlite3.connect('courses.db')
-    cursor = conn.cursor()
-
-    # Fetch all the courses from the database
-    cursor.execute("SELECT * FROM courses")
-    courses = cursor.fetchall()
-
-    # Clear the treeview
-    for record in courses_table.get_children():
-        courses_table.delete(record)
-
-    # Insert the courses into the treeview
-    for course in courses:
-        courses_table.insert("", "end", values=course)
-
-    conn.close()
     
-def update_course(courseID, new_courseName):
-    conn = sqlite3.connect('courses.db')
-    cursor = conn.cursor()
-    
-    # Check if the course exists in the database
-    cursor.execute("SELECT * FROM courses WHERE courseID = ?", (courseID,))
-    existing_course = cursor.fetchone()
-    if not existing_course:
-        messagebox.showinfo("Error", "Course does not exist.")
-        return
-    
-    # Update the course name in the database
-    cursor.execute("UPDATE courses SET courseName = ? WHERE courseID = ?", (new_courseName, courseID))
-    conn.commit()
-    conn.close()
-    
-    messagebox.showinfo("Success", "Course updated successfully.")
 
-def delete_course(courseID):
-    conn = sqlite3.connect('courses.db')
-    cursor = conn.cursor()
-    
-    # Check if the course exists in the database
-    cursor.execute("SELECT * FROM courses WHERE courseID = ?", (courseID))
-    existing_course = cursor.fetchone()
-    if not existing_course:
-        messagebox.showinfo("Error", "Course does not exist.")
-        return
-    
-    # Delete the course from the database
-    cursor.execute("DELETE FROM courses WHERE courseID = ?", (courseID))
-    conn.commit()
-    conn.close()
-    
-    messagebox.showinfo("Success", "Course deleted successfully.")
 
-def load_courses():
-    conn = sqlite3.connect('courses.db')
-    cursor = conn.cursor()
-
-    # Fetch all courses from the database
-    conn = sqlite3.connect('courses.db')
-    cursor = conn.cursor()
-
-# Create the "courses" table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS courses (
-            courseID INTEGER PRIMARY KEY,
-            courseName TEXT
-        )
-    ''')
-    courses = cursor.fetchall()
-
-    # Clear existing items in the treeview
-    courses_table.delete(*courses_table.get_children())
-
-    # Insert courses into the treeview
-    for course in courses:
-        courses_table.insert('', 'end', values=course)
-
-    conn.close()
-    
 
 
 
@@ -309,30 +310,6 @@ detail_frame.place(x=20,y=55,width=450,height=575)
 
 data_frame = tk.Frame(app, bg="lightblue",relief=tk.GROOVE)
 data_frame.place(x=475,y=55,width=810,height=575)
-
-
-# courses treeview
-courses_table = ttk.Treeview(detail_frame)
-courses_table['columns'] = ('courseID', 'courseName')
-
-# Define column headings
-
-courses_table.heading('courseID', text='Course ID')
-courses_table.heading('courseName', text='Course Name')
-
-# Define column widths
-courses_table.column('courseID',anchor="center" ,width=100)
-courses_table.column('courseName', anchor= "center" ,width=200)
-courses_table.column("#0", width=0, stretch=tk.NO)
-# Load courses into the treeview
-load_courses()
-
-# Place the Treeview widget
-courses_table.place(x=80,y=250, height=150)
-
-# Button to refresh the table
-refresh_button = tk.Button(detail_frame, text="Refresh", command=load_courses)
-refresh_button.place()
 
 
 
@@ -375,12 +352,11 @@ coursecode_entry.place(x=110, y=200)
 
 button_add_course = tk.Button(detail_frame, text="Add Course",bg="lightgrey",bd=5,font=("Times",7),width=10, command=add_course)
 button_add_course.place(x=270,y=150)
-button_edit_course = tk.Button(detail_frame, text="Edit Course",bg="lightgrey",bd=5,font=("Times",7),width=10, command=add_course)
+button_edit_course = tk.Button(detail_frame, text="Edit Course",bg="lightgrey",bd=5,font=("Times",7),width=10, command=edit_course)
 button_edit_course.place(x=342,y=150)
-button_remove_course = tk.Button(detail_frame, text="Remove Course",bg="lightgrey",bd=5,font=("Times",7),width=10, command=add_course)
-button_remove_course.place(x=270,y=200)
-refresh_button = tk.Button(detail_frame, text="Refresh", bg="lightgrey",bd=5,font=("Times",7),width=10, command=load_courses)
-refresh_button.place(x=342,y=200)
+button_delete_course = tk.Button(detail_frame, text="Delete Course",bg="lightgrey",bd=5,font=("Times",7),width=10, command=delete_course)
+button_delete_course.place(x=270,y=200)
+
 
 
 
@@ -413,8 +389,8 @@ search_entry.grid(row=0,column=1,padx=12,pady=2)
 search_btn = tk.Button(title_label,bg="lightgrey",text="Search",bd=5,font=("Times",7),width=15,command=search)
 search_btn.place(x=880,y=5)
 
-update_button = tk.Button(title_label, bg="lightgrey", text="Edit",bd=5,font=("Times",7),width=15,command=update)
-update_button.place(x=980,y=5)
+edit_button = tk.Button(title_label, bg="lightgrey", text="Edit",bd=5,font=("Times",7),width=15,command=edit)
+edit_button.place(x=980,y=5)
 
 reset_btn = tk.Button(title_label, text="Reset",bg="lightgrey", bd=5,font=("Times",7),width=15, command=reset_data)
 reset_btn.place(x=1080,y=5)
@@ -431,12 +407,33 @@ x_scroll = tk.Scrollbar(main_frame, orient = tk.HORIZONTAL)
 style = ttk.Style()
 style.configure("Treeview", bd= 7)
 
-# Treeview
+
+# Treeview for courses.db
+courses_table = ttk.Treeview(detail_frame)
+courses_table["columns"] = ("courseID", "courseName")
+
+courses_table.column("courseID",anchor="w" ,width=100)
+courses_table.column("courseName", anchor= "center" ,width=200)
+
+courses_table.heading("courseID", text="Course ID")
+courses_table.heading("courseName", text="Course Name")
+courses_table.column("#0", width=0, stretch=tk.NO)
+courses_table.place(x=80,y=250, height=150)
+
+
+results_courses = read_courses()
+
+for result in results_courses:
+    courses_table.insert("", tk.END, values=results_courses)
+
+courses_table.bind("<<TreeviewSelect>>", select)
+
+# Treeview for students.db
 stud_table = ttk.Treeview(main_frame)
 stud_table["columns"] = ("ID", "Name", "Sex", "Year Level", "Course")
 stud_table.column("ID", anchor="center", width=100, minwidth=50)
-stud_table.column("Name", anchor="center", width=150, minwidth=100)
-stud_table.column("Sex", anchor="center", width=80, minwidth=50)
+stud_table.column("Name", anchor="w", width=150, minwidth=100)
+stud_table.column("Sex", anchor="w", width=80, minwidth=50)
 stud_table.column("Year Level", anchor="center", width=100, minwidth=50)
 stud_table.column("Course", anchor="center", width=200, minwidth=100)
 
