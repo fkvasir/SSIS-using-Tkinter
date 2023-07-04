@@ -52,15 +52,6 @@ def read():
     conn.close()
     return results
 
-def read_courses():
-    conn = sqlite3.connect('courses.db')
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM courses")
-    results_courses = cursor.fetchall()
-    conn.commit()
-    conn.close()
-    return results_courses
-
 def add():
     # Retrieve the input data from the Tkinter interface
     student_id = id.get()
@@ -102,7 +93,8 @@ def add_course():
         cursor = conn.cursor()
 
         # Insert the course into the database
-        cursor.execute("INSERT INTO courses (courseID, courseName) VALUES (?, ?)", (course_id, course_name))
+        query = "INSERT INTO courses (courseID, courseName) VALUES (?, ?)"
+        cursor.execute(query, (course_id, course_name))
         conn.commit()
 
         # Close the connection
@@ -272,7 +264,7 @@ def refresh_data_courses():
 
     # Insert the data into the courses_table
     for result in results_courses:
-        courses_table.insert("", tk.END, values=result)
+        courses_table.insert("", tk.END, values=results_courses)
 
 
     
@@ -300,6 +292,40 @@ def search():
 
     conn.close()
     
+
+def read_courses():
+    # Connect to the database (assuming it's named 'courses.db')
+    conn = sqlite3.connect('courses.db')
+    c = conn.cursor()
+
+    # Fetch data from the 'courses' table
+    c.execute("SELECT courseID, courseName FROM courses")
+    courses_data = c.fetchall()
+
+    # Close the connection
+    conn.close()
+
+    return courses_data
+
+def display_courses():
+    # Connect to the database (assuming it's named 'courses.db')
+    conn = sqlite3.connect('courses.db')
+    c = conn.cursor()
+
+    # Fetch data from the 'courses' table
+    c.execute("SELECT courseID, courseName FROM courses")
+    courses_data = c.fetchall()
+
+    # Close the connection
+    conn.close()
+
+    # Clear existing items in the Treeview
+    for item in courses_table.get_children():
+        courses_table.delete(item)
+
+    # Insert the updated data into the Treeview
+    for course in courses_data:
+        courses_table.insert("", tk.END, values=course)
 
 
 
@@ -405,9 +431,9 @@ reset_btn.place(x=1080,y=5)
 # frame for treeview
 main_frame=tk.Frame(data_frame,bg="lightgrey", bd=7,relief=tk.GROOVE)
 main_frame.pack(fill=tk.BOTH,expand=True)
-
 y_scroll = tk.Scrollbar(main_frame, orient = tk.VERTICAL)
 x_scroll = tk.Scrollbar(main_frame, orient = tk.HORIZONTAL)
+
 
 # style object
 style = ttk.Style()
@@ -418,21 +444,19 @@ style.configure("Treeview", bd= 7)
 courses_table = ttk.Treeview(detail_frame)
 courses_table["columns"] = ("courseID", "courseName")
 
-courses_table.column("courseID",anchor="w" ,width=100)
-courses_table.column("courseName", anchor= "center" ,width=200)
+courses_table.column("courseID",anchor="center" ,width=100)
+courses_table.column("courseName", anchor= "w" ,width=200)
 
 courses_table.heading("courseID", text="Course ID")
 courses_table.heading("courseName", text="Course Name")
 courses_table.column("#0", width=0, stretch=tk.NO)
 courses_table.place(x=80,y=250, height=150)
 
-
-results_courses = read_courses()
-
-for result in results_courses:
-    courses_table.insert("", tk.END, values=results_courses)
+display_courses()
 
 courses_table.bind("<<TreeviewSelect>>", select)
+
+
 
 # Treeview for students.db
 stud_table = ttk.Treeview(main_frame)
@@ -458,7 +482,5 @@ for result in results:
 
 # Bind the select function to the tree view selection event
 stud_table.bind("<<TreeviewSelect>>", select)
-
-
 
 app.mainloop()
