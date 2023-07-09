@@ -2,7 +2,7 @@ import tkinter as tk
 import sqlite3
 from tkinter import ttk
 from tkinter import messagebox
-
+import os
 
 
 
@@ -44,7 +44,7 @@ def setph(word,num):
 
         
 def read():
-    conn = sqlite3.connect('students.db')
+    conn = sqlite3.connect('courses.db')
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM students")
     results = cursor.fetchall()
@@ -61,7 +61,7 @@ def add():
     course_id = courseID.get()
 
     # Connect to the SQLite database
-    conn = sqlite3.connect("students.db")
+    conn = sqlite3.connect("courses.db")
     cursor = conn.cursor()
 
     # Define the SQL query to insert the data into the database table
@@ -115,7 +115,7 @@ def add_course():
 
 def reset_data():
     
-    conn = sqlite3.connect('students.db')
+    conn = sqlite3.connect('courses.db')
     cursor = conn.cursor()
 
     cursor.execute('''DELETE FROM students''')
@@ -129,7 +129,7 @@ def delete():
     selected_id = id_entry.get()
 
     
-    conn = sqlite3.connect('students.db')
+    conn = sqlite3.connect('courses.db')
     cursor = conn.cursor()
 
     cursor.execute('''DELETE FROM students WHERE studentID = ?''', (selected_id,))
@@ -197,7 +197,7 @@ def edit():
     new_year = year_entry.get()
     new_courseID = coursecode_entry.get()
 
-    conn = sqlite3.connect('students.db')
+    conn = sqlite3.connect('courses.db')
     cursor = conn.cursor()
 
 
@@ -273,7 +273,7 @@ def search():
     search_term = searchin.get()    
 
     # Connect to the database
-    conn = sqlite3.connect('students.db')
+    conn = sqlite3.connect('courses.db')
     cursor = conn.cursor()
 
     # Execute the search query
