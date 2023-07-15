@@ -2,7 +2,6 @@ import tkinter as tk
 import sqlite3
 from tkinter import ttk
 from tkinter import messagebox
-import os
 
 
 
@@ -355,47 +354,47 @@ def display_courses():
 
 # Graphical User Interface
 
-title_label = tk.Label(app, border=5, height=20, relief= tk.GROOVE, bg = "lightblue")
+title_label = tk.Label(app, border=5, height=20, relief= tk.GROOVE, bg = "lightgreen")
 title_label.pack(side=tk.TOP,fill=tk.X)
 
 # frames
-detail_frame = tk.LabelFrame(app, bd=10,relief=tk.GROOVE,bg="lightblue")
+detail_frame = tk.LabelFrame(app, bd=10,relief=tk.GROOVE,bg="lightgreen")
 detail_frame.place(x=20,y=55,width=450,height=575)
 
-data_frame = tk.Frame(app, bg="lightblue",relief=tk.GROOVE)
+data_frame = tk.Frame(app, bg="lightgreen",relief=tk.GROOVE)
 data_frame.place(x=475,y=55,width=810,height=575)
 
 
 
 
 # entries and labels >> detail frame
-id_label = tk.Label(detail_frame, text="ID",font=("Times", 10), bg= "lightblue")
+id_label = tk.Label(detail_frame, text="ID",font=("Times", 10), bg= "lightgreen")
 id_label.place(x=20,y=20)
 id_entry = tk.Entry(detail_frame,bd=5,font=("Times",10),textvariable=id)
 id_entry.place(x=110,y=20)
 
-name_label = tk.Label(detail_frame, text="Name",font=("Times", 10), bg= "lightblue")
+name_label = tk.Label(detail_frame, text="Name",font=("Times", 10), bg= "lightgreen")
 name_label.place(x=20,y=60)
 name_entry = tk.Entry(detail_frame,bd=5,font=("Times",10),textvariable=name)
 name_entry.place(x=110, y=60)
 
-sex_label = tk.Label(detail_frame, text="Sex",font=("Times", 10), bg= "lightblue")
+sex_label = tk.Label(detail_frame, text="Sex",font=("Times", 10), bg= "lightgreen")
 sex_label.place(x=20,y=110)
 sex_entry = ttk.Combobox(detail_frame,font=("Times",8),textvariable=sex)
 sex_entry['values']=("Male","Female")
 sex_entry.place(x=110,y=110)
 
 
-year_label = tk.Label(detail_frame, text="Year level",font=("Times",10),bg="lightblue")
+year_label = tk.Label(detail_frame, text="Year level",font=("Times",10),bg="lightgreen")
 year_label.place(x=20,y=420)
 year_entry = tk.Entry(detail_frame,bd=5,font=("Times",10),textvariable=year)
 year_entry.place(x=110,y=420)
 
 
 # Courses
-course_label = tk.Label(detail_frame, text="Course Name",bg="lightblue",bd=5,font=("Times",10),width=10)
+course_label = tk.Label(detail_frame, text="Course Name",bg="lightgreen",bd=5,font=("Times",10),width=10)
 course_label.place(x=20,y=150)
-coursecode_label= tk.Label(detail_frame, text="Course Code",bg="lightblue",bd=5,font=("Times",10))
+coursecode_label= tk.Label(detail_frame, text="Course Code",bg="lightgreen",bd=5,font=("Times",10))
 coursecode_label.place(x=20,y=200)
 
 course_entry = tk.Entry(detail_frame,bd=5,font=("Times",10),textvariable=courseName)
@@ -435,7 +434,7 @@ search_frame = tk.Frame(data_frame,bg="lightgrey",bd=10,relief=tk.GROOVE)
 search_frame.pack(side=tk.TOP, fill=tk.X)
 
 # search and show buttons
-search_label=tk.Label(title_label,text="Search",bg="lightblue",font=("Times",17))
+search_label=tk.Label(title_label,text="Search",bg="lightgreen",font=("Times",17))
 search_label.grid(row=0,column=0,padx=2,pady=2)
 
 search_entry =ttk.Entry(title_label,font=("Times", 15),textvariable=searchin)
@@ -486,7 +485,7 @@ stud_table = ttk.Treeview(main_frame)
 stud_table["columns"] = ("ID", "Name", "Sex", "Year Level", "Course")
 stud_table.column("ID", anchor="center", width=100, minwidth=50)
 stud_table.column("Name", anchor="w", width=150, minwidth=100)
-stud_table.column("Sex", anchor="w", width=80, minwidth=50)
+stud_table.column("Sex", anchor="center", width=80, minwidth=50)
 stud_table.column("Year Level", anchor="center", width=100, minwidth=50)
 stud_table.column("Course", anchor="center", width=200, minwidth=100)
 
