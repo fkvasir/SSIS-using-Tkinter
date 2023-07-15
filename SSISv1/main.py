@@ -81,6 +81,7 @@ def remove_data():
             
             messagebox.showinfo("Data Removed", "Data has been removed successfully.")
             load_data()
+            clear_entries()
     else:
         messagebox.showerror("Error", "Please select a record to remove.")
         
@@ -172,10 +173,8 @@ def save_changes(selected_index, entry_name, entry_courses, entry_sex, entry_id,
     entry_id.delete(0, tk.END)
     entry_year.delete(0, tk.END)
     load_data()
-    if 'window_edit' in globals() and isinstance(window_edit, tk.Toplevel):
-        window_edit.destroy()
+    clear_entries()
 
-    
 def search_data():
     search_term = search_entry.get().lower()
 
@@ -198,8 +197,10 @@ def search_data():
         if not found_records:
             messagebox.showinfo("Search Result", "No matching records found.")
     else:
-        # If the search entry is empty, load all data
+        # If the search bar is empty, load all data
         load_data()
+        clear_entries()
+
 
 def clear_entries():
     entry_name.delete(0, tk.END)
@@ -298,15 +299,11 @@ button_add_course.place(x=342,y=178)
 
 # buttons >> button frame
 btn_frame= tk.Frame(detail_frame, bg="lightblue",bd=10,relief=tk.GROOVE)
-btn_frame.place(x=120,y=490,width=240,height=55)
+btn_frame.place(x=180,y=490,width=130,height=55)
 
 
 button_save_selection = tk.Button(btn_frame, text="Save",bg="lightblue",bd=7,font=("Times",7),width=15, command=save_selection)
 button_save_selection.grid(row=0,column=0,padx=7,pady=2)
-
-
-clear_btn = tk.Button(btn_frame, bg="lightblue", text="Clear",bd=7,font=("Times",7),width=15, command=clear_entries)
-clear_btn.grid(row=0,column=1,padx=7,pady=2)
 
 
 # search and show buttons
