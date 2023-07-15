@@ -95,15 +95,16 @@ def load_data():
             dataview.insert(tk.END, ', '.join(row))
 
 def edit_data():
+    global edit_window
     selected_index = dataview.selection()
 
     if selected_index:
         selected_data = dataview.item(dataview.selection())['values']
 
-        window_edit = tk.Toplevel()
-        window_edit.title("Edit Data")
+        edit_window = tk.Toplevel()
+        edit_window.title("Edit Data")
 
-        frame_edit = tk.Frame(window_edit)
+        frame_edit = tk.Frame(edit_window)
         frame_edit.pack(pady=20)
 
         label_name = tk.Label(frame_edit, text="Name")
@@ -136,7 +137,7 @@ def edit_data():
         entry_edit_year.grid(row=4, column=1)
         entry_edit_year.insert(tk.END, selected_data[4])  # Index 4 is the Year
 
-        button_save = tk.Button(window_edit, text="Save Changes", command=lambda: save_changes(selected_index, entry_edit_name, entry_edit_courses, entry_edit_sex, entry_edit_id, entry_edit_year))
+        button_save = tk.Button(edit_window, text="Save Changes", command=lambda: save_changes(selected_index, entry_edit_name, entry_edit_courses, entry_edit_sex, entry_edit_id, entry_edit_year))
         button_save.pack(pady=10)
 
     else:
@@ -174,6 +175,8 @@ def save_changes(selected_index, entry_name, entry_courses, entry_sex, entry_id,
     entry_year.delete(0, tk.END)
     load_data()
     clear_entries()
+    edit_window.destroy()
+    
 
 def search_data():
     search_term = search_entry.get().lower()
