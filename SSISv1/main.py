@@ -286,9 +286,9 @@ dataview.heading("Course", text="Course")
 dataview.heading("Year", text="Year")
 
 dataview.column("ID",anchor="center", width=120)
-dataview.column("Name",anchor="w", width=120)
+dataview.column("Name",anchor="w", width=170)
 dataview.column("Sex",anchor="center", width=80)
-dataview.column("Course",anchor="center", width=200)
+dataview.column("Course",anchor="center", width=150)
 dataview.column("Year",anchor="center", width=70)
 dataview.pack(expand=True, fill=tk.BOTH)
 
