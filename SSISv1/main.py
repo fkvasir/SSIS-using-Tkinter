@@ -7,7 +7,7 @@ from tkinter import ttk
 
 root = tk.Tk()
 root.title("SSIS v1.0")
-root.geometry("990x700")
+root.geometry("1280x700")
 
 title_label = tk.Label(root,height=3,relief=tk.GROOVE,bg="lightgreen")
 title_label.pack(side=tk.TOP,fill=tk.X)
@@ -17,7 +17,7 @@ detail_frame = tk.LabelFrame(root,font=("Times",13),bd=5,relief=tk.GROOVE,bg="li
 detail_frame.place(y=35,width=430,height=660)
 
 data_frame = tk.Frame(root,bg="lightgreen",bd=5,relief=tk.GROOVE)
-data_frame.place(x=429,y=35,width=550,height=660)
+data_frame.place(x=429,y=35,width=850,height=660)
 
 # __init__ variables
 id= tk.StringVar()
@@ -288,7 +288,7 @@ dataview.heading("Year", text="Year")
 dataview.column("ID",anchor="center", width=120)
 dataview.column("Name",anchor="w", width=120)
 dataview.column("Sex",anchor="center", width=80)
-dataview.column("Course",anchor="center", width=120)
+dataview.column("Course",anchor="center", width=200)
 dataview.column("Year",anchor="center", width=70)
 dataview.pack(expand=True, fill=tk.BOTH)
 
@@ -370,13 +370,13 @@ search_entry.grid(row=0,column=1,padx=12,pady=2)
 
 # buttons >> search_frame
 button_remove_data = tk.Button(title_label, text="Remove Data", bd=7, font=("Arial", 7), width=15, command=remove_data)
-button_remove_data.place(x=655, y=2)
+button_remove_data.place(x=1025, y=2)
 
 search_btn = tk.Button(title_label, text="Search", bd=7, font=("Arial", 7), width=15, command=search_data)
-search_btn.place(x=540, y=2)
+search_btn.place(x=910, y=2)
 
 button_edit_data = tk.Button(title_label, text="Edit", bd=7, font=("Arial", 7), width=15, command=edit_data)
-button_edit_data.place(x=770, y=2)
+button_edit_data.place(x=1140, y=2)
 
 load_data()
 
